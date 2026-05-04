@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
+/* ===============================
+   DARK MODE VARIANT
+================================= */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===============================
+   ROOT THEME (LIGHT)
+================================= */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e293b;
+  --primary: #2563eb;
+  --muted: #f8fafc;
+  --accent: #e2e8f0;
+
+  color-scheme: light;
 }
 
+/* ===============================
+   TAILWIND THEME MAPPING
+================================= */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===============================
+   DARK THEME
+================================= */
+[data-theme="dark"] {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --primary: #60a5fa;
+  --muted: #0f172a;
+  --accent: #334155;
+
+  color-scheme: dark;
 }
 
+/* ===============================
+   BASE STYLES
+================================= */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===============================
+   PARTNER MARQUEE (FINAL)
+================================= */
+
+/* Mask for smooth edge fade */
+.partner-marquee-mask {
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* Scrolling track */
+.partner-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  animation: partner-marquee 30s linear infinite;
+  will-change: transform;
+}
+
+/* Pause on hover */
+.partner-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Infinite scroll animation */
+@keyframes partner-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ===============================
+   OPTIONAL FLOATING CARD EFFECT
+================================= */
+.partner-item {
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partner-item:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ===============================
+   FADE-IN ANIMATIONS
+================================= */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* ===============================
+   REDUCED MOTION SUPPORT
+================================= */
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee-track {
+    animation: none;
+  }
+
+  .animate-fade-in {
+    animation: none;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 25s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 35s linear infinite;
 }
