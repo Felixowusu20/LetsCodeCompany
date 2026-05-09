@@ -1,8 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockBlogPosts } from "../../lib/mockData";
+import { getBlogPosts } from "../../lib/serverContent";
 
-export default function Blog() {
+/** Load posts at request time (avoids DB calls during `next build` when Neon is unreachable). */
+export const dynamic = "force-dynamic";
+
+export default async function Blog() {
+  const posts = await getBlogPosts();
   return (
     <main className="bg-slate-50">
       <section className="bg-white py-24">
@@ -24,7 +28,7 @@ export default function Blog() {
       <section className="py-24 bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-3">
-            {mockBlogPosts.map((post, index) => (
+            {posts.map((post, index) => (
               <article
                 key={post.id}
                 className="overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-lg shadow-slate-200/70 transition hover:-translate-y-1 hover:shadow-xl"
@@ -66,6 +70,11 @@ export default function Blog() {
                 </div>
               </article>
             ))}
+            {posts.length === 0 && (
+              <div className="col-span-full rounded-[2rem] border border-dashed border-slate-200 bg-white p-10 text-center text-slate-600">
+                No posts published yet.
+              </div>
+            )}
           </div>
         </div>
       </section>

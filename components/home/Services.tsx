@@ -1,53 +1,9 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
+import { getServices } from "../../lib/serverContent";
 
-const services = [
-  {
-    id: 1,
-    title: "Web Development",
-    desc: "Modern responsive websites and scalable web apps.",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&h=800&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Mobile Apps",
-    desc: "Cross-platform mobile apps with seamless UX.",
-    image:
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200&h=800&fit=crop",
-  },
-  {
-    id: 3,
-    title: "UI / UX Design",
-    desc: "Clean, modern, and user-focused interfaces.",
-    image:
-      "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=1200&h=800&fit=crop",
-  },
-  {
-    id: 4,
-    title: "AI Solutions",
-    desc: "Automation, AI tools, and intelligent systems.",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=800&fit=crop",
-  },
-  {
-    id: 5,
-    title: "Cyber Security",
-    desc: "Secure systems and data protection strategies.",
-    image:
-      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=800&fit=crop",
-  },
-  {
-    id: 6,
-    title: "Hosting & Deployment",
-    desc: "Cloud infrastructure and scalable deployments.",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop",
-  },
-];
-
-export default function Services() {
+export default async function Services() {
+  const services = await getServices();
   return (
     <>
       {/* HEADER */}
@@ -67,19 +23,19 @@ export default function Services() {
 
       {/* IMAGE GRID */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => (
+        {services.map((service, idx) => (
           <div
             key={service.id}
             className="relative h-[320px] rounded-2xl overflow-hidden group"
             data-aos="fade-up"
-            data-aos-delay={service.id * 70}
+            data-aos-delay={idx * 70}
           >
             {/* IMAGE */}
-            <img
-              src={service.image}
-              alt={service.title}
-              className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
-            />
+            {service.image ? (
+              <Image src={service.image} alt={service.title} fill className="object-cover transition duration-500 group-hover:scale-110" />
+            ) : (
+              <div className="h-full w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
+            )}
 
             {/* OVERLAY */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -91,14 +47,14 @@ export default function Services() {
               </h3>
 
               <p className="text-sm text-white/80 mb-4">
-                {service.desc}
+                {service.description}
               </p>
 
               <Link
-                href="/contact"
+                href={`/services/${service.id}`}
                 className="text-sm font-semibold text-blue-300 hover:text-blue-400 transition"
               >
-                Learn More →
+                See details →
               </Link>
             </div>
           </div>

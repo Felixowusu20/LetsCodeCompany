@@ -1,16 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockBlogPosts } from "../../../lib/mockData";
+import { getBlogPostById } from "../../../lib/serverContent";
 import { notFound } from "next/navigation";
 
 interface BlogPostPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = mockBlogPosts.find(p => p.id === parseInt(params.id));
+/** Load post at request time (avoids DB calls during `next build` when Neon is unreachable). */
+export const dynamic = "force-dynamic";
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { id } = await params;
+  const post = await getBlogPostById(id);
 
   if (!post) {
     notFound();
@@ -51,9 +53,11 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-slate-600 text-lg leading-8">
               {post.excerpt}
             </p>
-            <p className="mt-8 text-slate-700">
-              This is a placeholder for the full blog post content. When you add the backend, you can replace this with the actual content from your CMS or database. The mock data structure is ready to accommodate full article content.
-            </p>
+            {post.content ? (
+              <p className="mt-8 text-slate-700">
+                {post.content}
+              </p>
+            ) : null}
           </div>
         </div>
       </section>
