@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { CheckCircle2, Clock3, Mail, MapPin, Phone, Send } from "lucide-react";
+import { CheckCircle2, Clock3, Mail, MapPin, Phone } from "lucide-react";
+import ContactForm from "../../components/contact/ContactForm";
 import { contactMock } from "../../lib/mockData";
 
 const channelIcons = [Mail, Phone, MapPin];
@@ -108,97 +109,11 @@ export default function Contact() {
                   Send us the useful details.
                 </h2>
                 <p className="mt-4 leading-7 text-slate-600">
-                  This frontend uses mock form handling for now, keeping the page ready for backend integration later.
+                  Send a detailed note and we will route it to the right people. Your submission is stored in the database and visible in the admin panel.
                 </p>
               </div>
 
-              <form className="mt-10 space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-slate-800">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Your name"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-slate-800">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      placeholder="you@company.com"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-semibold text-slate-800">
-                      Company
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      placeholder="Company name"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="budget" className="block text-sm font-semibold text-slate-800">
-                      Budget range
-                    </label>
-                    <select
-                      id="budget"
-                      name="budget"
-                      defaultValue=""
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                    >
-                      <option value="" disabled>
-                        Select a range
-                      </option>
-                      <option>$5k - $15k</option>
-                      <option>$15k - $50k</option>
-                      <option>$50k+</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-slate-800">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    placeholder="Tell us about your goals, timeline, and the product experience you want to create."
-                    className="mt-3 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="max-w-md text-sm leading-6 text-slate-500">
-                    No backend is connected yet, so this form is prepared as a frontend-ready interface.
-                  </p>
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
-                  >
-                    Send Message
-                    <Send className="h-4 w-4" />
-                  </button>
-                </div>
-              </form>
+              <ContactForm />
             </div>
           </div>
         </div>

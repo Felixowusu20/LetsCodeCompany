@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockServices } from "../../../lib/mockData";
 import { notFound } from "next/navigation";
+import { getServiceById } from "../../../lib/serverContent";
 
 interface ServicePageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function ServicePage({ params }: ServicePageProps) {
-  const service = mockServices.find(s => s.id === parseInt(params.id));
+export const dynamic = "force-dynamic";
+
+export default async function ServicePage({ params }: ServicePageProps) {
+  const { id } = await params;
+  const service = await getServiceById(id);
 
   if (!service) {
     notFound();
@@ -34,7 +35,7 @@ export default function ServicePage({ params }: ServicePageProps) {
             <p className="mt-6 text-lg leading-8 text-slate-200">
               {service.description}
             </p>
-            <div className="mt-8 text-6xl">{service.icon}</div>
+            {service.icon ? <div className="mt-8 text-6xl">{service.icon}</div> : null}
           </div>
         </div>
       </section>
@@ -42,12 +43,7 @@ export default function ServicePage({ params }: ServicePageProps) {
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative h-96 overflow-hidden rounded-[2rem] border border-slate-200 shadow-xl" data-aos="zoom-in">
-            <Image
-              src={service.image}
-              alt={service.title}
-              fill
-              className="object-cover"
-            />
+            {service.image ? <Image src={service.image} alt={service.title} fill className="object-cover" /> : null}
           </div>
         </div>
       </section>

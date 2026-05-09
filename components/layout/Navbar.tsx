@@ -20,17 +20,18 @@ const navLinks = [
 function BrandLogo({ mobile = false }: { mobile?: boolean }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition dark:border-white/10 dark:bg-slate-900 ${
-        mobile ? "h-10 w-32" : "h-10 w-32 sm:h-12 sm:w-36"
+      className={`inline-flex items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ring-1 ring-black/5 transition dark:border-white/10 dark:bg-slate-900 dark:ring-white/10 ${
+        mobile ? "h-10 w-[140px]" : "h-10 w-[140px] sm:h-12 sm:w-[170px]"
       }`}
     >
       <Image
         src="/logo.jpeg" // ✅ SAME LOGO FOR ALL MODES
         alt="LetsCode Logo"
-        fill
+        width={170}
+        height={48}
         priority
-        sizes="144px"
-        className="object-cover"
+        sizes="170px"
+        className="h-full w-full object-contain"
       />
     </div>
   );
@@ -123,7 +124,7 @@ export default function Navbar() {
 
         {/* SIDEBAR */}
         <aside
-          className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white p-6 text-slate-900 shadow-2xl transition-transform duration-300 dark:bg-slate-950 dark:text-white ${
+          className={`absolute right-0 top-0 h-full w-[85%] max-w-sm border-l border-slate-200 bg-white p-6 text-slate-900 shadow-2xl transition-transform duration-300 dark:border-white/10 dark:bg-slate-950 dark:text-white ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -154,19 +155,45 @@ export default function Navbar() {
           </button>
 
           {/* LINKS */}
-          <div className="space-y-3">
-            {navLinks.map((link) => (
+          <div className="mt-2 rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-950">
+            {navLinks.map((link, idx) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className={`block rounded-xl px-4 py-3 text-base font-semibold transition ${
+                className={`group flex items-center justify-between px-5 py-4 text-lg font-medium tracking-tight transition ${
                   isActive(link.href)
-                    ? "bg-blue-50 text-blue-600 dark:bg-white/10 dark:text-white"
-                    : "text-slate-700 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+                    ? "text-slate-950 dark:text-white"
+                    : "text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                 }`}
               >
-                {link.name}
+                <span className="relative">
+                  {link.name}
+                  <span
+                    className={`pointer-events-none absolute -bottom-2 left-0 h-0.5 w-8 rounded-full transition ${
+                      isActive(link.href)
+                        ? "bg-blue-600 dark:bg-blue-300"
+                        : "bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-white/10"
+                    }`}
+                    aria-hidden="true"
+                  />
+                </span>
+                <span
+                  className={`text-xs font-semibold tracking-wide transition ${
+                    isActive(link.href)
+                      ? "text-blue-600/80 dark:text-blue-200/80"
+                      : "text-slate-400 group-hover:text-slate-500 dark:text-slate-500 dark:group-hover:text-slate-400"
+                  }`}
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+                {idx !== navLinks.length - 1 && (
+                  <span
+                    className="pointer-events-none absolute left-5 right-5 mt-[3.75rem] border-b border-slate-100 dark:border-white/5"
+                    aria-hidden="true"
+                  />
+                )}
               </Link>
             ))}
           </div>
@@ -176,7 +203,7 @@ export default function Navbar() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-900 dark:bg-white dark:text-slate-950 dark:hover:bg-white/90"
             >
               Get Started
             </Link>

@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockServices } from "../../lib/mockData";
+import { getServices } from "../../lib/serverContent";
 
-export default function Services() {
+export const dynamic = "force-dynamic";
+
+export default async function Services() {
+  const services = await getServices();
   return (
     <main>
       <section className="relative overflow-hidden bg-slate-950 text-white">
@@ -25,23 +28,27 @@ export default function Services() {
       <section className="bg-slate-50 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {mockServices.map((service) => (
+            {services.map((service, idx) => (
               <article
                 key={service.id}
                 className="group overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-slate-200/80 transition hover:-translate-y-1 hover:shadow-2xl"
                 data-aos="fade-up"
-                data-aos-delay={service.id * 70}
+                data-aos-delay={idx * 70}
               >
                 <div className="relative h-72 overflow-hidden">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {service.image ? (
+                    <Image
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                   <div className="absolute left-6 bottom-6 inline-flex items-center gap-3 rounded-full bg-white/90 px-4 py-2 text-slate-900 shadow-lg shadow-slate-900/10 backdrop-blur">
-                    <span className="text-xl">{service.icon}</span>
+                    {service.icon ? <span className="text-xl">{service.icon}</span> : null}
                     <span className="font-semibold">{service.title}</span>
                   </div>
                 </div>

@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String   @default("")
+  image     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlogPost {
+  id           String   @id @default(cuid())
+  title        String
+  excerpt      String
+  content      String
+  author       String
+  date         String
+  image        String   @default("")
+  authorAvatar String   @default("")
+  comments     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String   @default("")
+  tags        String[] @default([])
+  websiteUrl  String?
+  downloadUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String?  @db.Text
+  image       String   @default("")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logo      String
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroSlide {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String
+  image     String
+  cta       String   @default("Get Started")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  CLOSED
+}
+
+enum ContactProjectType {
+  WEB_APP
+  MOBILE_APP
+  BOTH
+  OTHER_CONSULTING
+}
+
+model ContactSubmission {
+  id             String             @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  company        String?
+  projectType    ContactProjectType
+  projectDetails String?
+  message        String
+  status         ContactStatus      @default(NEW)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}

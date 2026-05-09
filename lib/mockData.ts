@@ -234,4 +234,32 @@ export const mockPartners = [
     logo: "https://logo.clearbit.com/paystack.com",
   },
 ];
- 
+
+export const mockHeroSlides = [
+  {
+    id: 1,
+    title: "Welcome to LetsCode",
+    subtitle:
+      "We build modern, scalable web applications that drive your business forward.",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&h=900&fit=crop",
+    cta: "Get Started",
+  },
+  {
+    id: 2,
+    title: "Innovative Solutions",
+    subtitle:
+      "Cutting-edge technology combined with creative design for exceptional results.",
+    image:
+      "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1600&h=900&fit=crop",
+    cta: "Learn More",
+  },
+  {
+    id: 3,
+    title: "Your Success Matters",
+    subtitle: "From concept to deployment, we make your vision a reality.",
+    image:
+      "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600&h=900&fit=crop",
+    cta: "Contact Us",
+  },
+];

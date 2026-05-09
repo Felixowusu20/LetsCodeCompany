@@ -1,16 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockTeamMembers } from "../../../lib/mockData";
 import { notFound } from "next/navigation";
+import { getTeamMembers } from "../../../lib/serverContent";
 
 interface TeamMemberPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function TeamMemberPage({ params }: TeamMemberPageProps) {
-  const member = mockTeamMembers.find(m => m.id === parseInt(params.id));
+/** Load team from Postgres at request time (avoids DB calls during `next build` when Neon is unreachable). */
+export const dynamic = "force-dynamic";
+
+export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
+  const { id } = await params;
+  const members = await getTeamMembers();
+  const member = members.find((m) => m.id === id);
 
   if (!member) {
     notFound();

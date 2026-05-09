@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { mockPartners } from "@/lib/mockData";
+import { useEffect, useMemo, useState } from "react";
 
 const partnerLinks: Record<string, string> = {
   Spotify: "https://spotify.com",
@@ -14,7 +14,30 @@ const partnerLinks: Record<string, string> = {
   Paystack: "https://paystack.com",
 };
 
+type Partner = { id: string; name: string; logo: string; website?: string | null };
+
+async function loadPartners(): Promise<Partner[]> {
+  const res = await fetch("/api/public/partners", { cache: "no-store" });
+  if (!res.ok) return [];
+  return (await res.json()) as Partner[];
+}
+
 export default function PartnerMarquee() {
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    void loadPartners().then((rows) => {
+      if (alive) setPartners(rows);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const orbitOne = useMemo(() => partners.slice(0, 4), [partners]);
+  const orbitTwo = useMemo(() => partners.slice(4), [partners]);
+
   return (
     <section className="relative overflow-hidden bg-white py-28 text-slate-900">
 
@@ -60,16 +83,16 @@ export default function PartnerMarquee() {
 
           {/* ================= ORBIT 1 ================= */}
           <div className="absolute h-[440px] w-[440px] animate-spin-slow">
-            {mockPartners.slice(0, 4).map((partner, i) => (
+            {orbitOne.map((partner, i) => (
               <div
-                key={partner.name}
+                key={partner.id}
                 className="absolute left-1/2 top-1/2"
                 style={{
                   transform: `rotate(${i * 92}deg) translate(195px) rotate(-${i * 92}deg)`
                 }}
               >
                 <a
-                  href={partnerLinks[partner.name]}
+                  href={partner.website ?? partnerLinks[partner.name] ?? "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition duration-300 hover:scale-110 hover:border-blue-300"
@@ -88,16 +111,16 @@ export default function PartnerMarquee() {
 
           {/* ================= ORBIT 2 ================= */}
           <div className="absolute h-[310px] w-[310px] animate-spin-reverse-slow">
-            {mockPartners.slice(4).map((partner, i) => (
+            {orbitTwo.map((partner, i) => (
               <div
-                key={partner.name}
+                key={partner.id}
                 className="absolute left-1/2 top-1/2"
                 style={{
                   transform: `rotate(${i * 118}deg) translate(145px) rotate(-${i * 118}deg)`
                 }}
               >
                 <a
-                  href={partnerLinks[partner.name]}
+                  href={partner.website ?? partnerLinks[partner.name] ?? "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition duration-300 hover:scale-110 hover:border-sky-300"

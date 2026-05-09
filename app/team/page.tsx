@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mockTeamMembers } from "../../lib/mockData";
+import { getTeamMembers } from "../../lib/serverContent";
 
 const cardBackgrounds = ["bg-sky-200", "bg-rose-200", "bg-amber-200"];
 
-export default function Team() {
+/** Load team from Postgres at request time (avoids DB calls during `next build` when Neon is unreachable). */
+export const dynamic = "force-dynamic";
+
+export default async function Team() {
+  const members = await getTeamMembers();
   return (
     <main className="bg-slate-50">
       <section className="relative overflow-hidden bg-slate-950 text-white">
@@ -29,7 +33,7 @@ export default function Team() {
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {mockTeamMembers.map((member, index) => (
+            {members.map((member, index) => (
               <Link
                 key={member.id}
                 href={`/team/${member.id}`}
