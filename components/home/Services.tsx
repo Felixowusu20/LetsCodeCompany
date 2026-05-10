@@ -7,26 +7,26 @@ export default async function Services() {
   return (
     <>
       {/* HEADER */}
-      <div className="text-center mb-20" data-aos="fade-up">
+      <div className="mb-12 text-center sm:mb-20" data-aos="fade-up">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
           What We Do
         </p>
 
-        <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900">
+        <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">
           Our Services
         </h2>
 
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+        <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 sm:text-lg">
           We deliver modern digital solutions that help businesses grow and scale.
         </p>
       </div>
 
       {/* IMAGE GRID */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service, idx) => (
           <div
             key={service.id}
-            className="relative h-[320px] rounded-2xl overflow-hidden group"
+            className="group relative h-64 overflow-hidden rounded-2xl sm:h-[320px]"
             data-aos="fade-up"
             data-aos-delay={idx * 70}
           >
@@ -41,12 +41,12 @@ export default async function Services() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
             {/* CONTENT */}
-            <div className="absolute bottom-6 left-6 right-6 text-white">
-              <h3 className="text-xl font-semibold mb-2">
+            <div className="absolute bottom-5 left-5 right-5 text-white sm:bottom-6 sm:left-6 sm:right-6">
+              <h3 className="mb-2 text-lg font-semibold sm:text-xl">
                 {service.title}
               </h3>
 
-              <p className="text-sm text-white/80 mb-4">
+              <p className="mb-4 text-sm text-white/80">
                 {service.description}
               </p>
 
@@ -62,22 +62,22 @@ export default async function Services() {
       </div>
 
       {/* CTA BLOCK */}
-      <div className="mt-24 text-center bg-blue-50 rounded-2xl p-14" data-aos="fade-up">
+      <div className="mt-16 rounded-2xl bg-blue-50 p-8 text-center sm:mt-24 sm:p-14" data-aos="fade-up">
         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
           Ready to get started?
         </p>
 
-        <h3 className="mt-4 text-3xl font-bold text-gray-900">
+        <h3 className="mt-4 text-2xl font-bold text-gray-900 sm:text-3xl">
           Let’s build something amazing together.
         </h3>
 
         <p className="mx-auto mt-4 max-w-2xl text-gray-600">
-          Partner with LetsCode to design, build, and scale your next big idea.
+          Partner with ZeoFex to design, build, and scale your next big idea.
         </p>
 
         <Link
           href="/contact"
-          className="mt-8 inline-flex rounded-xl bg-blue-600 px-8 py-3 text-white font-semibold shadow-lg hover:bg-blue-700 transition"
+          className="mt-8 inline-flex w-full justify-center rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow-lg transition hover:bg-blue-700 sm:w-auto"
         >
           Contact Us
         </Link>

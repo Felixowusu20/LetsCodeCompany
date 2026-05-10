@@ -21,3 +21,17 @@ function createPrisma() {
 export const prisma = globalForPrisma.prisma ?? createPrisma();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+/**
+ * Stale long‑running dev servers can keep a PrismaClient instance from before
+ * `npx prisma generate` (e.g. new `FooterContent` model) so `prisma.footerContent` is undefined.
+ * Use this before calling a model delegate, or run `npx prisma generate` and restart `next dev`.
+ */
+export function prismaDelegateOrNull(name: "footerContent" | "aboutContent") {
+  const d = (prisma as unknown as Record<string, unknown>)[name];
+  if (d == null || typeof d !== "object") return null;
+  return d as { findFirst: (args: unknown) => Promise<unknown> };
+}
+
+export const prismaOutOfDateMessage =
+  'Prisma client is out of date. Run "npx prisma generate", then restart the dev server (or redeploy).';

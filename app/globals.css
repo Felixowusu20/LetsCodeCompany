@@ -136,18 +136,10 @@ body {
 }
 
 /* ===============================
-   REDUCED MOTION SUPPORT
+   PARTNER ORBIT ANIMATIONS
+   Use translate3d/will-change to keep these on the compositor and away from
+   the main thread (so they don't compete with input → better INP).
 ================================= */
-@media (prefers-reduced-motion: reduce) {
-  .partner-marquee-track {
-    animation: none;
-  }
-
-  .animate-fade-in {
-    animation: none;
-  }
-}
-
 @keyframes spin-slow {
   from {
     transform: rotate(0deg);
@@ -168,8 +160,23 @@ body {
 
 .animate-spin-slow {
   animation: spin-slow 25s linear infinite;
+  will-change: transform;
 }
 
 .animate-spin-reverse-slow {
   animation: spin-reverse-slow 35s linear infinite;
+  will-change: transform;
+}
+
+/* ===============================
+   REDUCED MOTION SUPPORT
+================================= */
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee-track,
+  .animate-fade-in,
+  .animate-spin-slow,
+  .animate-spin-reverse-slow,
+  .animate-ping {
+    animation: none !important;
+  }
 }

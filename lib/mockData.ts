@@ -112,7 +112,7 @@ export const mockTeamMembers = [
 ];
 
 export const aboutMock = {
-  company: "LetsCode",
+  company: "ZeoFex",
 
   hero: {
     title: "Building digital products that power modern businesses",
@@ -125,7 +125,7 @@ export const aboutMock = {
   story: {
     title: "Our Story",
     paragraphs: [
-      "LetsCode started with a simple vision — to make high-quality software accessible to startups and growing businesses.",
+      "ZeoFex started with a simple vision — to make high-quality software accessible to startups and growing businesses.",
       "Over time, we evolved into a modern tech company building scalable web platforms, mobile apps, and intelligent systems used by real users worldwide.",
     ],
     image:
@@ -166,6 +166,36 @@ export const aboutMock = {
         "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?w=1200&h=800&fit=crop",
     },
   ],
+};
+
+/** Defaults for public footer + CMS singleton (`FooterContent`). */
+export const footerMock = {
+  companyName: aboutMock.company,
+  tagline:
+    "Building reliable websites, apps, AI tools, and digital platforms for modern teams.",
+  exploreColumnTitle: "Explore",
+  exploreLinks: [
+    { label: "About", href: "/about" },
+    { label: "Services", href: "/services" },
+    { label: "Products", href: "/products" },
+  ],
+  companyColumnTitle: "Company",
+  companyLinks: [
+    { label: "Blog", href: "/blog" },
+    { label: "Team", href: "/team" },
+    { label: "Contact", href: "/contact" },
+    { label: "Privacy", href: "/privacy" },
+    { label: "Acceptable Use", href: "/acceptable-use" },
+    { label: "Cookie Policy", href: "/cookies" },
+  ],
+  ctaTitle: "Let us turn your ideas into reality",
+  ctaBody:
+    "ready to start a project or just want to say hi? We are here to help you build something great.",
+  ctaButtonLabel: "Book a Call",
+  ctaButtonHref: "/contact",
+  copyrightText: `© 2026 ${aboutMock.company}. All rights reserved.`,
+  termsLabel: "Terms & Conditions",
+  termsHref: "/terms",
 };
 
 export const contactMock = {
@@ -238,7 +268,7 @@ export const mockPartners = [
 export const mockHeroSlides = [
   {
     id: 1,
-    title: "Welcome to LetsCode",
+    title: "Welcome to ZeoFex",
     subtitle:
       "We build modern, scalable web applications that drive your business forward.",
     image:

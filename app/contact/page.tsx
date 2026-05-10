@@ -11,7 +11,7 @@ export default function Contact() {
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-slate-950/80 to-slate-950" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/80 to-transparent" />
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="max-w-3xl" data-aos="fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.32em] text-blue-300">
               Contact
@@ -26,14 +26,14 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="py-24">
+      <section className="py-16 sm:py-24">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.35fr] lg:px-8">
           <aside className="space-y-8">
             <div className="overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-slate-200/80" data-aos="fade-right">
               <div className="relative h-72">
                 <Image
                   src={contactMock.image}
-                  alt="LetsCode product studio workspace"
+                  alt="ZeoFex product studio workspace"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 40vw, 100vw"
@@ -46,7 +46,7 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-              <div className="space-y-5 p-8">
+              <div className="space-y-5 p-6 sm:p-8">
                 <h2 className="text-2xl font-bold text-slate-900">
                   Start with a focused conversation.
                 </h2>
@@ -64,7 +64,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/70 bg-white/80 p-8 shadow-xl shadow-slate-200/70 backdrop-blur" data-aos="fade-right" data-aos-delay="120">
+            <div className="rounded-[2rem] border border-white/70 bg-white/80 p-6 shadow-xl shadow-slate-200/70 backdrop-blur sm:p-8" data-aos="fade-right" data-aos-delay="120">
               <h2 className="text-xl font-bold text-slate-900">Typical response times</h2>
               <div className="mt-6 space-y-5">
                 {contactMock.responseTimes.map((item) => (

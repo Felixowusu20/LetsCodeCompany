@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Send } from "lucide-react";
-import { useRef, useState } from "react";
+import { startTransition, useRef, useState } from "react";
 
 import { CONTACT_PROJECT_TYPE_LABELS, type ContactProjectTypeApi } from "../../lib/contactShared";
 
@@ -20,9 +20,13 @@ export default function ContactForm() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
-    setDone(false);
-    setBusy(true);
+    // Batch the three state writes into a single transition so the click
+    // commits immediately and React re-renders the form once, not three times.
+    startTransition(() => {
+      setError(null);
+      setDone(false);
+      setBusy(true);
+    });
     const form = formRef.current ?? e.currentTarget;
     const fd = new FormData(form);
     const name = String(fd.get("name") ?? "").trim();
@@ -64,8 +68,8 @@ export default function ContactForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={(e) => void onSubmit(e)} className="mt-10 space-y-6">
-      <div className="grid gap-6 md:grid-cols-2">
+    <form ref={formRef} onSubmit={(e) => void onSubmit(e)} className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="name" className="block text-sm font-semibold text-slate-800">
             Name
@@ -76,7 +80,7 @@ export default function ContactForm() {
             name="name"
             required
             placeholder="Your name"
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
         <div>
@@ -89,12 +93,12 @@ export default function ContactForm() {
             name="email"
             required
             placeholder="you@company.com"
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="phone" className="block text-sm font-semibold text-slate-800">
             Phone
@@ -106,7 +110,7 @@ export default function ContactForm() {
             required
             autoComplete="tel"
             placeholder="+1 (555) 000-0000"
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
         <div>
@@ -118,12 +122,12 @@ export default function ContactForm() {
             id="company"
             name="company"
             placeholder="Company name"
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="projectType" className="block text-sm font-semibold text-slate-800">
             Project / product interest
@@ -133,7 +137,7 @@ export default function ContactForm() {
             name="projectType"
             required
             defaultValue=""
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           >
             <option value="" disabled>
               Select an option
@@ -154,7 +158,7 @@ export default function ContactForm() {
             id="projectDetails"
             name="projectDetails"
             placeholder="Product name, audience, or constraints"
-            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            className="mt-2.5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
       </div>
@@ -169,17 +173,17 @@ export default function ContactForm() {
           required
           rows={6}
           placeholder="Goals, timeline, and the product experience you want to create."
-          className="mt-3 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+          className="mt-2.5 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
         />
       </div>
 
       {error ? (
-        <p className="text-sm font-medium text-red-600" role="alert">
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700" role="alert">
           {error}
         </p>
       ) : null}
       {done ? (
-        <p className="text-sm font-medium text-emerald-600" role="status">
+        <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700" role="status">
           Thanks — your message was received. We will get back to you soon.
         </p>
       ) : null}

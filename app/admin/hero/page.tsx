@@ -169,7 +169,7 @@ export default function AdminHeroPage() {
                 value={draft.title}
                 onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-blue-300 dark:focus:ring-blue-400/20"
-                placeholder="Welcome to LetsCode"
+                placeholder="Welcome to ZeoFex"
               />
             </label>
             <label className="block">

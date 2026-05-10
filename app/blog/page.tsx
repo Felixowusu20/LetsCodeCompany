@@ -9,7 +9,7 @@ export default async function Blog() {
   const posts = await getBlogPosts();
   return (
     <main className="bg-slate-50">
-      <section className="bg-white py-24">
+      <section className="bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl" data-aos="fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-600">
@@ -25,9 +25,9 @@ export default async function Blog() {
         </div>
       </section>
 
-      <section className="py-24 bg-slate-100">
+      <section className="bg-slate-100 py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
             {posts.map((post, index) => (
               <article
                 key={post.id}
@@ -35,10 +35,10 @@ export default async function Blog() {
                 data-aos="fade-up"
                 data-aos-delay={index * 80}
               >
-                <div className="relative h-72 overflow-hidden">
+                <div className="relative h-56 overflow-hidden sm:h-72">
                   <Image src={post.image} alt={post.title} fill className="object-cover" />
                 </div>
-                <div className="p-8">
+                <div className="p-6 sm:p-8">
                   <div className="flex items-center gap-3 text-sm text-slate-500">
                     <span>{post.date}</span>
                     <span className="h-1 w-1 rounded-full bg-slate-300" />

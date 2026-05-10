@@ -1,6 +1,7 @@
 "use client";
 
-import { Lock, Sparkles } from "lucide-react";
+import { Lock } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -84,11 +85,18 @@ export default function AdminLoginPage() {
         <div className="overflow-hidden rounded-3xl border border-white/50 bg-white/85 shadow-2xl shadow-slate-300/40 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/80 dark:shadow-black/50">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 px-8 py-10 text-white">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 backdrop-blur">
-                <Sparkles className="h-5 w-5" />
+              <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-white/20 backdrop-blur">
+                <Image
+                  src="/logo.jpeg"
+                  alt="ZeoFex"
+                  width={44}
+                  height={44}
+                  priority
+                  className="h-full w-full object-contain p-1.5"
+                />
               </span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-100">Admin</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-100">ZeoFex</p>
                 <h1 className="text-xl font-bold tracking-tight">Welcome back</h1>
               </div>
             </div>
