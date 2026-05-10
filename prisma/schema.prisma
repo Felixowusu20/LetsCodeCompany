@@ -162,6 +162,10 @@ model FooterContent {
   termsLabel    String @default("Terms & Conditions")
   termsHref     String @default("/terms")
 
+  socialColumnTitle String @default("Follow us")
+  /// Array of { platform: string; href: string; label?: string } — platform is a Simple Icons slug (x, facebook, instagram, …) or "other".
+  socialLinks       Json   @default("[]")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

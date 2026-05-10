@@ -196,6 +196,13 @@ export const footerMock = {
   copyrightText: `© 2026 ${aboutMock.company}. All rights reserved.`,
   termsLabel: "Terms & Conditions",
   termsHref: "/terms",
+  socialColumnTitle: "Follow us",
+  socialLinks: [
+    { platform: "x", href: "https://twitter.com", label: "X (Twitter)" },
+    { platform: "linkedin", href: "https://linkedin.com", label: "LinkedIn" },
+    { platform: "instagram", href: "https://instagram.com", label: "Instagram" },
+    { platform: "facebook", href: "https://facebook.com", label: "Facebook" },
+  ],
 };
 
 export const contactMock = {
