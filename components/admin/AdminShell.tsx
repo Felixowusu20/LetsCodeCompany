@@ -9,6 +9,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  Paintbrush,
   PanelBottom,
   PanelsTopLeft,
   Puzzle,
@@ -20,9 +21,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { adminFetch, type MeResponse } from "../../lib/adminClient";
+import { useAdminBranding } from "./AdminBrandingContext";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true as const },
+  { href: "/admin/branding", label: "Brand & logo", icon: Paintbrush, end: false as const },
   { href: "/admin/hero", label: "Homepage hero", icon: ImageIcon, end: false as const },
   { href: "/admin/about", label: "About page", icon: FileText, end: false as const },
     { href: "/admin/services", label: "Services", icon: Puzzle, end: false as const },
@@ -37,6 +40,8 @@ const nav = [
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const branding = useAdminBranding();
+  const adminLogoSrc = branding.adminPanelLogoUrl?.trim() || "/logo.jpeg";
   const [email, setEmail] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
 
@@ -90,7 +95,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-white/40 bg-white/80 shadow-lg shadow-slate-200/40 backdrop-blur dark:border-white/10 dark:bg-white/10 dark:shadow-black/30">
               <Image
-                src="/logo.jpeg"
+                src={adminLogoSrc}
                 alt="ZeoFex"
                 width={48}
                 height={48}
@@ -159,7 +164,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                 <div className="mb-5 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5">
-                      <Image src="/logo.jpeg" alt="ZeoFex" width={40} height={40} className="h-full w-full object-contain p-1.5" />
+                      <Image src={adminLogoSrc} alt="ZeoFex" width={40} height={40} className="h-full w-full object-contain p-1.5" />
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-slate-900 dark:text-white">Admin</p>

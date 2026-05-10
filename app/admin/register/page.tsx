@@ -6,8 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AdminApiError, adminFetch, type MeResponse, type RegisterStatusResponse } from "../../../lib/adminClient";
+import { useAdminBranding } from "../../../components/admin/AdminBrandingContext";
 
 export default function AdminRegisterPage() {
+  const branding = useAdminBranding();
+  const adminLogoSrc = branding.adminPanelLogoUrl?.trim() || "/logo.jpeg";
   const router = useRouter();
   const [registerOpen, setRegisterOpen] = useState<boolean | null>(null);
   const [bootstrap, setBootstrap] = useState<boolean | null>(null);
@@ -96,7 +99,7 @@ export default function AdminRegisterPage() {
             <div className="flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-white/20 backdrop-blur">
                 <Image
-                  src="/logo.jpeg"
+                  src={adminLogoSrc}
                   alt="ZeoFex"
                   width={44}
                   height={44}

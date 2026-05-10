@@ -24,8 +24,12 @@ function isLinkActive(pathname: string | null, href: string) {
 
 const BrandLogo = memo(function BrandLogo({
   mobile = false,
+  lightSrc,
+  darkSrc,
 }: {
   mobile?: boolean;
+  lightSrc: string;
+  darkSrc: string;
 }) {
   const width = mobile ? 170 : 260;
   const height = mobile ? 40 : 48;
@@ -39,8 +43,8 @@ const BrandLogo = memo(function BrandLogo({
       }`}
     >
       <Image
-        src="/whitelog.jpeg"
-        alt="LetsCode logo"
+        src={lightSrc}
+        alt="Site logo"
         width={width}
         height={height}
         priority
@@ -52,8 +56,8 @@ const BrandLogo = memo(function BrandLogo({
         className="h-full w-full object-contain dark:hidden"
       />
       <Image
-        src="/logo.jpeg"
-        alt="LetsCode logo"
+        src={darkSrc}
+        alt="Site logo"
         width={width}
         height={height}
         priority
@@ -101,11 +105,15 @@ const MobileDrawer = memo(function MobileDrawer({
   onClose,
   pathname,
   onToggleTheme,
+  logoLightSrc,
+  logoDarkSrc,
 }: {
   open: boolean;
   onClose: () => void;
   pathname: string | null;
   onToggleTheme: () => void;
+  logoLightSrc: string;
+  logoDarkSrc: string;
 }) {
   return (
     <div
@@ -127,7 +135,7 @@ const MobileDrawer = memo(function MobileDrawer({
         {open ? (
           <div className="flex flex-col h-full">
             <div className="mb-8 flex items-center justify-between">
-              <BrandLogo mobile />
+              <BrandLogo mobile lightSrc={logoLightSrc} darkSrc={logoDarkSrc} />
               <button
                 type="button"
                 onClick={onClose}
@@ -189,10 +197,22 @@ const MobileDrawer = memo(function MobileDrawer({
   );
 });
 
-export default function Navbar() {
+const DEFAULT_NAV_LOGO_LIGHT = "/whitelog.jpeg";
+const DEFAULT_NAV_LOGO_DARK = "/logo.jpeg";
+
+export default function Navbar({
+  logoWhenUiLightUrl = DEFAULT_NAV_LOGO_LIGHT,
+  logoWhenUiDarkUrl = DEFAULT_NAV_LOGO_DARK,
+}: {
+  logoWhenUiLightUrl?: string;
+  logoWhenUiDarkUrl?: string;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { toggleTheme } = useTheme();
+
+  const logoLight = logoWhenUiLightUrl?.trim() || DEFAULT_NAV_LOGO_LIGHT;
+  const logoDark = logoWhenUiDarkUrl?.trim() || DEFAULT_NAV_LOGO_DARK;
 
   const openMenu = useCallback(() => setOpen(true), []);
   const closeMenu = useCallback(() => setOpen(false), []);
@@ -212,7 +232,7 @@ export default function Navbar() {
     <header className="fixed top-4 left-1/2 z-50 w-[95%] max-w-7xl -translate-x-1/2">
       <nav className="relative flex h-16 items-center justify-between rounded-2xl border border-white/20 bg-white/40 px-4 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 lg:h-20 lg:px-8">
         <Link href="/" className="flex items-center">
-          <BrandLogo />
+          <BrandLogo lightSrc={logoLight} darkSrc={logoDark} />
         </Link>
 
         <div className="hidden items-center gap-2 lg:flex">
@@ -254,6 +274,8 @@ export default function Navbar() {
         onClose={closeMenu}
         pathname={pathname}
         onToggleTheme={toggleTheme}
+        logoLightSrc={logoLight}
+        logoDarkSrc={logoDark}
       />
     </header>
   );

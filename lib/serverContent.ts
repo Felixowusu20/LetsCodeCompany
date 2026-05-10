@@ -9,6 +9,8 @@ import {
   mockServices,
   mockTeamMembers,
 } from "./mockData";
+import type { SiteBranding } from "./siteBranding";
+export type { SiteBranding } from "./siteBranding";
 
 export type HomeHeroSlide = {
   id: string | number;
@@ -467,5 +469,33 @@ export async function getFooterContent(): Promise<FooterContent> {
     };
   } catch {
     return fallbackFooterContent();
+  }
+}
+
+function fallbackSiteBranding(): SiteBranding {
+  return {
+    logoWhenUiLightUrl: "/whitelog.jpeg",
+    logoWhenUiDarkUrl: "/logo.jpeg",
+    adminPanelLogoUrl: "/logo.jpeg",
+  };
+}
+
+export async function getSiteBranding(): Promise<SiteBranding> {
+  try {
+    if (!prismaDelegateOrNull("siteBranding")) return fallbackSiteBranding();
+    const row = await prisma.siteBranding!.findFirst({
+      orderBy: [{ updatedAt: "desc" }],
+    });
+    if (!row) return fallbackSiteBranding();
+    const fb = fallbackSiteBranding();
+    const dark = row.logoWhenUiDarkUrl?.trim() || fb.logoWhenUiDarkUrl;
+    const admin = row.adminPanelLogoUrl?.trim() || dark;
+    return {
+      logoWhenUiLightUrl: row.logoWhenUiLightUrl?.trim() || fb.logoWhenUiLightUrl,
+      logoWhenUiDarkUrl: dark,
+      adminPanelLogoUrl: admin,
+    };
+  } catch {
+    return fallbackSiteBranding();
   }
 }
