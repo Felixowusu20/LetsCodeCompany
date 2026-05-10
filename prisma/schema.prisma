@@ -165,3 +165,18 @@ model FooterContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/// Singleton row for navbar + admin chrome logos (URLs from Cloudinary or /public).
+model SiteBranding {
+  id String @id @default(cuid())
+
+  /// Navbar when the site UI is light (legacy default: /whitelog.jpeg).
+  logoWhenUiLightUrl String @default("")
+  /// Navbar when the site UI is dark (legacy default: /logo.jpeg).
+  logoWhenUiDarkUrl  String @default("")
+  /// Login / admin shell header (square mark). Falls back to logoWhenUiDarkUrl when empty.
+  adminPanelLogoUrl  String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

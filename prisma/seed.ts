@@ -149,6 +149,18 @@ async function main() {
     });
     console.log("Seeded Footer content");
   }
+
+  const brandingCount = await prisma.siteBranding.count();
+  if (brandingCount === 0) {
+    await prisma.siteBranding.create({
+      data: {
+        logoWhenUiLightUrl: "",
+        logoWhenUiDarkUrl: "",
+        adminPanelLogoUrl: "",
+      },
+    });
+    console.log("Seeded Site branding (empty URLs → fallback /public assets)");
+  }
 }
 
 main()
