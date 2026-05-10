@@ -11,6 +11,13 @@ import {
 } from "./mockData";
 import type { SiteBranding } from "./siteBranding";
 export type { SiteBranding } from "./siteBranding";
+import {
+  coerceFooterSocialLinks,
+  slugifySocialPlatform,
+} from "./footerSocial";
+import type { FooterSocialLinkItem } from "./footerSocial";
+
+export type { FooterSocialLinkItem } from "./footerSocial";
 
 export type HomeHeroSlide = {
   id: string | number;
@@ -405,6 +412,8 @@ export type FooterContent = {
   copyrightText: string;
   termsLabel: string;
   termsHref: string;
+  socialColumnTitle: string;
+  socialLinks: FooterSocialLinkItem[];
 };
 
 function coerceFooterLinks(raw: unknown): FooterLinkItem[] {
@@ -439,6 +448,12 @@ function fallbackFooterContent(): FooterContent {
       typeof footerMock.termsHref === "string" && footerMock.termsHref.trim()
         ? footerMock.termsHref.trim()
         : "/terms",
+    socialColumnTitle: footerMock.socialColumnTitle?.trim() || "Follow us",
+    socialLinks: (footerMock.socialLinks ?? []).map((s) => ({
+      platform: slugifySocialPlatform(s.platform),
+      href: s.href.trim(),
+      label: (s.label ?? "").trim() || slugifySocialPlatform(s.platform),
+    })),
   };
 }
 
@@ -466,6 +481,8 @@ export async function getFooterContent(): Promise<FooterContent> {
         typeof row.termsHref === "string" && row.termsHref.trim()
           ? row.termsHref.trim()
           : "/terms",
+      socialColumnTitle: row.socialColumnTitle?.trim() || "Follow us",
+      socialLinks: coerceFooterSocialLinks(row.socialLinks),
     };
   } catch {
     return fallbackFooterContent();

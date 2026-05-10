@@ -145,6 +145,8 @@ async function main() {
         copyrightText: footerMock.copyrightText,
         termsLabel: footerMock.termsLabel,
         termsHref: footerMock.termsHref,
+        socialColumnTitle: footerMock.socialColumnTitle,
+        socialLinks: footerMock.socialLinks,
       },
     });
     console.log("Seeded Footer content");

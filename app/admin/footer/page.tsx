@@ -8,6 +8,8 @@ import { useDeferredEffect } from "../../../lib/useDeferredEffect";
 
 type FooterLink = { label: string; href: string };
 
+type FooterSocialLink = { platform: string; href: string; label: string };
+
 type FooterDto = {
   id: string;
   companyName: string;
@@ -23,8 +25,28 @@ type FooterDto = {
   copyrightText: string;
   termsLabel: string;
   termsHref: string;
+  socialColumnTitle: string;
+  socialLinks: FooterSocialLink[];
   updatedAt: string;
 };
+
+const SOCIAL_PLATFORM_OPTIONS: { value: string; label: string }[] = [
+  { value: "x", label: "X (Twitter)" },
+  { value: "linkedin", label: "LinkedIn" },
+  { value: "instagram", label: "Instagram" },
+  { value: "facebook", label: "Facebook" },
+  { value: "youtube", label: "YouTube" },
+  { value: "github", label: "GitHub" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "threads", label: "Threads" },
+  { value: "bluesky", label: "Bluesky" },
+  { value: "discord", label: "Discord" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "behance", label: "Behance" },
+  { value: "dribbble", label: "Dribbble" },
+  { value: "medium", label: "Medium" },
+  { value: "other", label: "Other (generic icon)" },
+];
 
 type Draft = Omit<FooterDto, "id" | "updatedAt">;
 
@@ -43,6 +65,8 @@ function emptyDraft(): Draft {
     copyrightText: "",
     termsLabel: "",
     termsHref: "",
+    socialColumnTitle: "",
+    socialLinks: [],
   };
 }
 
@@ -61,6 +85,8 @@ function fromDto(d: FooterDto): Draft {
     copyrightText: d.copyrightText,
     termsLabel: d.termsLabel,
     termsHref: d.termsHref,
+    socialColumnTitle: d.socialColumnTitle,
+    socialLinks: d.socialLinks ?? [],
   };
 }
 
@@ -85,6 +111,12 @@ function toPayload(draft: Draft) {
     copyrightText: draft.copyrightText.trim(),
     termsLabel: draft.termsLabel.trim(),
     termsHref: draft.termsHref.trim(),
+    socialColumnTitle: draft.socialColumnTitle.trim(),
+    socialLinks: draft.socialLinks.map((s) => ({
+      platform: s.platform.trim().toLowerCase() || "other",
+      href: s.href.trim(),
+      label: s.label.trim(),
+    })),
   };
 }
 
@@ -194,6 +226,32 @@ export default function AdminFooterPage() {
     setDraft((d) => ({
       ...d,
       companyLinks: d.companyLinks.filter((_, i) => i !== index),
+    }));
+  }
+
+  function updateSocial(index: number, patch: Partial<FooterSocialLink>) {
+    setDraft((d) => ({
+      ...d,
+      socialLinks: d.socialLinks.map((s, i) =>
+        i === index ? { ...s, ...patch } : s,
+      ),
+    }));
+  }
+
+  function addSocial() {
+    setDraft((d) => ({
+      ...d,
+      socialLinks: [
+        ...d.socialLinks,
+        { platform: "x", href: "", label: "X (Twitter)" },
+      ],
+    }));
+  }
+
+  function removeSocial(index: number) {
+    setDraft((d) => ({
+      ...d,
+      socialLinks: d.socialLinks.filter((_, i) => i !== index),
     }));
   }
 
@@ -385,6 +443,111 @@ export default function AdminFooterPage() {
             >
               <Plus className="h-4 w-4" />
               Add link
+            </button>
+          </div>
+        </section>
+
+        <section className={sectionWrapperClass}>
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            Social media
+          </h3>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            Icon URLs use{" "}
+            <span className="font-medium text-slate-800 dark:text-slate-200">
+              Simple Icons
+            </span>{" "}
+            by slug (shown next to each row). Use full URLs starting with{" "}
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs dark:bg-white/10">
+              https://
+            </code>
+            .
+          </p>
+          <label className="mt-4 block max-w-md">
+            <span className={labelTextClass}>Section heading</span>
+            <input
+              className={inputClass}
+              value={draft.socialColumnTitle}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  socialColumnTitle: e.target.value,
+                }))
+              }
+              placeholder="Follow us"
+            />
+          </label>
+          <div className="mt-4 space-y-3">
+            {draft.socialLinks.map((link, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/50 p-4 dark:border-white/10 dark:bg-white/5 lg:flex-row lg:items-end"
+              >
+                <label className="block w-full max-w-[220px]">
+                  <span className={labelTextClass}>Network</span>
+                  <select
+                    className={inputClass}
+                    value={link.platform}
+                    onChange={(e) =>
+                      updateSocial(i, {
+                        platform: e.target.value,
+                        label:
+                          SOCIAL_PLATFORM_OPTIONS.find(
+                            (o) => o.value === e.target.value,
+                          )?.label ?? link.label,
+                      })
+                    }
+                  >
+                    {SOCIAL_PLATFORM_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                    {!SOCIAL_PLATFORM_OPTIONS.some(
+                      (o) => o.value === link.platform,
+                    ) && link.platform ? (
+                      <option value={link.platform}>{link.platform}</option>
+                    ) : null}
+                  </select>
+                </label>
+                <label className="block min-w-0 flex-1">
+                  <span className={labelTextClass}>Profile URL</span>
+                  <input
+                    className={inputClass}
+                    value={link.href}
+                    onChange={(e) =>
+                      updateSocial(i, { href: e.target.value })
+                    }
+                    placeholder="https://"
+                  />
+                </label>
+                <label className="block min-w-0 flex-1">
+                  <span className={labelTextClass}>Accessibility label</span>
+                  <input
+                    className={inputClass}
+                    value={link.label}
+                    onChange={(e) =>
+                      updateSocial(i, { label: e.target.value })
+                    }
+                    placeholder="Visit our LinkedIn"
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => removeSocial(i)}
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                  aria-label="Remove social link"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addSocial}
+              className="inline-flex items-center gap-2 rounded-2xl border border-dashed border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-400 hover:text-blue-700 dark:border-white/20 dark:text-slate-300 dark:hover:border-blue-400 dark:hover:text-blue-300"
+            >
+              <Plus className="h-4 w-4" />
+              Add social profile
             </button>
           </div>
         </section>

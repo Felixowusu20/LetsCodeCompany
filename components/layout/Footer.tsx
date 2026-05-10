@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getFooterContent } from "../../lib/serverContent";
+import FooterSocialIcons from "./FooterSocialIcons";
 
 const linkClass = "transition hover:text-white";
 
@@ -43,14 +44,15 @@ export default async function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <h3 className="text-2xl font-bold text-white">{c.companyName}</h3>
-            <p className="mt-4 text-slate-400">{c.tagline}</p>
+            <p className="mt-4 text-slate-300">{c.tagline}</p>
+            <FooterSocialIcons title={c.socialColumnTitle} links={c.socialLinks} />
           </div>
 
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-300">
               {c.exploreColumnTitle}
             </h4>
-            <ul className="mt-5 space-y-3 text-slate-400">
+            <ul className="mt-5 space-y-3 text-slate-300">
               {c.exploreLinks.map((item) => (
                 <li key={`${item.href}-${item.label}`}>
                   <FooterHref href={item.href} className={linkClass}>
@@ -65,7 +67,7 @@ export default async function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-300">
               {c.companyColumnTitle}
             </h4>
-            <ul className="mt-5 space-y-3 text-slate-400">
+            <ul className="mt-5 space-y-3 text-slate-300">
               {c.companyLinks.map((item) => (
                 <li key={`${item.href}-${item.label}`}>
                   <FooterHref href={item.href} className={linkClass}>
@@ -90,7 +92,7 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-8 text-center text-slate-500">
+        <div className="mt-12 border-t border-white/10 pt-8 text-center text-slate-400">
           <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
             <span>{c.copyrightText}</span>
             <span aria-hidden className="text-slate-600">

@@ -5,6 +5,7 @@ import type {
 } from "../../../../prisma/generated/prisma/client";
 import { getAdminSessionOr401 } from "../../../../lib/auth";
 import { footerMock } from "../../../../lib/mockData";
+import { coerceFooterSocialLinks } from "../../../../lib/footerSocial";
 import {
   prisma,
   prismaDelegateOrNull,
@@ -14,6 +15,8 @@ import {
 export const dynamic = "force-dynamic";
 
 type FooterLinkDto = { label: string; href: string };
+
+type FooterSocialDto = { platform: string; href: string; label: string };
 
 type FooterDto = {
   id: string;
@@ -30,6 +33,8 @@ type FooterDto = {
   copyrightText: string;
   termsLabel: string;
   termsHref: string;
+  socialColumnTitle: string;
+  socialLinks: FooterSocialDto[];
   updatedAt: string;
 };
 
@@ -48,6 +53,8 @@ function defaultsFromMock(): Prisma.FooterContentCreateInput {
     copyrightText: footerMock.copyrightText,
     termsLabel: footerMock.termsLabel,
     termsHref: footerMock.termsHref,
+    socialColumnTitle: footerMock.socialColumnTitle,
+    socialLinks: footerMock.socialLinks as Prisma.InputJsonValue,
   };
 }
 
@@ -81,6 +88,8 @@ function toDto(row: FooterContentRow): FooterDto {
     copyrightText: row.copyrightText,
     termsLabel: row.termsLabel,
     termsHref: row.termsHref,
+    socialColumnTitle: row.socialColumnTitle,
+    socialLinks: coerceFooterSocialLinks(row.socialLinks),
     updatedAt: row.updatedAt.toISOString(),
   };
 }
@@ -140,6 +149,14 @@ function buildUpdateData(body: UpdateBody): Prisma.FooterContentUpdateInput {
   if (typeof body.copyrightText === "string") data.copyrightText = body.copyrightText.trim();
   if (typeof body.termsLabel === "string") data.termsLabel = body.termsLabel.trim();
   if (typeof body.termsHref === "string") data.termsHref = body.termsHref.trim();
+  if (typeof body.socialColumnTitle === "string") {
+    data.socialColumnTitle = body.socialColumnTitle.trim();
+  }
+  if (Array.isArray(body.socialLinks)) {
+    data.socialLinks = coerceFooterSocialLinks(
+      body.socialLinks,
+    ) as Prisma.InputJsonValue;
+  }
 
   return data;
 }
