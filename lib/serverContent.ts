@@ -1,5 +1,7 @@
-import { prisma } from "./prisma";
+import { prisma, prismaDelegateOrNull } from "./prisma";
 import {
+  aboutMock,
+  footerMock,
   mockBlogPosts,
   mockHeroSlides,
   mockPartners,
@@ -289,4 +291,181 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 export async function getBlogPostById(id: string): Promise<BlogPost | null> {
   const posts = await getBlogPosts();
   return posts.find((p) => p.id === id) ?? null;
+}
+
+export type AboutValueItem = {
+  title: string;
+  desc: string;
+  image: string;
+};
+
+export type AboutContent = {
+  heroEyebrow: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  storyTitle: string;
+  storyParagraphs: string[];
+  storyImage: string;
+  missionTitle: string;
+  missionText: string;
+  missionImage: string;
+  visionTitle: string;
+  visionText: string;
+  visionImage: string;
+  valuesTitle: string;
+  valuesSubtitle: string;
+  values: AboutValueItem[];
+};
+
+function fallbackAboutContent(): AboutContent {
+  return {
+    heroEyebrow: `About ${aboutMock.company}`,
+    heroTitle: "Powerful service design for modern product teams.",
+    heroSubtitle:
+      "We combine engineering, design, and strategy to build digital products that feel premium and scale effortlessly.",
+    storyTitle: aboutMock.story.title,
+    storyParagraphs: aboutMock.story.paragraphs,
+    storyImage: aboutMock.story.image,
+    missionTitle: aboutMock.mission.title,
+    missionText: aboutMock.mission.text,
+    missionImage: aboutMock.mission.image,
+    visionTitle: aboutMock.vision.title,
+    visionText: aboutMock.vision.text,
+    visionImage: aboutMock.vision.image,
+    valuesTitle: "Our Values",
+    valuesSubtitle:
+      "The principles that guide our work and shape every customer experience.",
+    values: aboutMock.values.map((v) => ({
+      title: v.title,
+      desc: v.desc,
+      image: v.image,
+    })),
+  };
+}
+
+function coerceValues(raw: unknown): AboutValueItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const obj = entry as Record<string, unknown>;
+      const title = typeof obj.title === "string" ? obj.title : "";
+      const desc = typeof obj.desc === "string" ? obj.desc : "";
+      const image = typeof obj.image === "string" ? obj.image : "";
+      if (!title && !desc && !image) return null;
+      return { title, desc, image } satisfies AboutValueItem;
+    })
+    .filter((v): v is AboutValueItem => v !== null);
+}
+
+export async function getAboutContent(): Promise<AboutContent> {
+  try {
+    if (!prismaDelegateOrNull("aboutContent")) return fallbackAboutContent();
+    const row = await prisma.aboutContent!.findFirst({
+      orderBy: [{ updatedAt: "desc" }],
+    });
+    if (!row) return fallbackAboutContent();
+    return {
+      heroEyebrow: row.heroEyebrow,
+      heroTitle: row.heroTitle,
+      heroSubtitle: row.heroSubtitle,
+      storyTitle: row.storyTitle,
+      storyParagraphs: row.storyParagraphs ?? [],
+      storyImage: row.storyImage,
+      missionTitle: row.missionTitle,
+      missionText: row.missionText,
+      missionImage: row.missionImage,
+      visionTitle: row.visionTitle,
+      visionText: row.visionText,
+      visionImage: row.visionImage,
+      valuesTitle: row.valuesTitle,
+      valuesSubtitle: row.valuesSubtitle,
+      values: coerceValues(row.values),
+    };
+  } catch {
+    return fallbackAboutContent();
+  }
+}
+
+export type FooterLinkItem = { label: string; href: string };
+
+export type FooterContent = {
+  companyName: string;
+  tagline: string;
+  exploreColumnTitle: string;
+  exploreLinks: FooterLinkItem[];
+  companyColumnTitle: string;
+  companyLinks: FooterLinkItem[];
+  ctaTitle: string;
+  ctaBody: string;
+  ctaButtonLabel: string;
+  ctaButtonHref: string;
+  copyrightText: string;
+  termsLabel: string;
+  termsHref: string;
+};
+
+function coerceFooterLinks(raw: unknown): FooterLinkItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((entry): FooterLinkItem | null => {
+      if (!entry || typeof entry !== "object") return null;
+      const obj = entry as Record<string, unknown>;
+      const label = typeof obj.label === "string" ? obj.label.trim() : "";
+      const href = typeof obj.href === "string" ? obj.href.trim() : "";
+      if (!label || !href) return null;
+      return { label, href };
+    })
+    .filter((v): v is FooterLinkItem => v !== null);
+}
+
+function fallbackFooterContent(): FooterContent {
+  return {
+    companyName: footerMock.companyName,
+    tagline: footerMock.tagline,
+    exploreColumnTitle: footerMock.exploreColumnTitle,
+    exploreLinks: footerMock.exploreLinks.map((l) => ({ ...l })),
+    companyColumnTitle: footerMock.companyColumnTitle,
+    companyLinks: footerMock.companyLinks.map((l) => ({ ...l })),
+    ctaTitle: footerMock.ctaTitle,
+    ctaBody: footerMock.ctaBody,
+    ctaButtonLabel: footerMock.ctaButtonLabel,
+    ctaButtonHref: footerMock.ctaButtonHref,
+    copyrightText: footerMock.copyrightText,
+    termsLabel: footerMock.termsLabel?.trim() || "Terms & Conditions",
+    termsHref:
+      typeof footerMock.termsHref === "string" && footerMock.termsHref.trim()
+        ? footerMock.termsHref.trim()
+        : "/terms",
+  };
+}
+
+export async function getFooterContent(): Promise<FooterContent> {
+  try {
+    if (!prismaDelegateOrNull("footerContent")) return fallbackFooterContent();
+    const row = await prisma.footerContent!.findFirst({
+      orderBy: [{ updatedAt: "desc" }],
+    });
+    if (!row) return fallbackFooterContent();
+    return {
+      companyName: row.companyName,
+      tagline: row.tagline,
+      exploreColumnTitle: row.exploreColumnTitle,
+      exploreLinks: coerceFooterLinks(row.exploreLinks),
+      companyColumnTitle: row.companyColumnTitle,
+      companyLinks: coerceFooterLinks(row.companyLinks),
+      ctaTitle: row.ctaTitle,
+      ctaBody: row.ctaBody,
+      ctaButtonLabel: row.ctaButtonLabel,
+      ctaButtonHref: row.ctaButtonHref,
+      copyrightText: row.copyrightText,
+      termsLabel: row.termsLabel?.trim() || "Terms & Conditions",
+      termsHref:
+        typeof row.termsHref === "string" && row.termsHref.trim()
+          ? row.termsHref.trim()
+          : "/terms",
+    };
+  } catch {
+    return fallbackFooterContent();
+  }
 }

@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X, ChevronRight } from "lucide-react";
 import { useTheme } from "../providers/Providers";
 
 const navLinks = [
@@ -15,201 +15,246 @@ const navLinks = [
   { name: "Blog", href: "/blog" },
   { name: "Team", href: "/team" },
   { name: "Contact", href: "/contact" },
-];
+] as const;
 
-function BrandLogo({ mobile = false }: { mobile?: boolean }) {
+function isLinkActive(pathname: string | null, href: string) {
+  if (!pathname) return false;
+  return href === "/" ? pathname === href : pathname.startsWith(href);
+}
+
+const BrandLogo = memo(function BrandLogo({
+  mobile = false,
+}: {
+  mobile?: boolean;
+}) {
+  const width = mobile ? 170 : 260;
+  const height = mobile ? 40 : 48;
+
   return (
     <div
-      className={`inline-flex items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ring-1 ring-black/5 transition dark:border-white/10 dark:bg-slate-900 dark:ring-white/10 ${
-        mobile ? "h-10 w-[140px]" : "h-10 w-[140px] sm:h-12 sm:w-[170px]"
+      className={`inline-flex items-center justify-center overflow-hidden transition ${
+        mobile
+          ? "h-10 w-[170px]"
+          : "h-10 w-[180px] sm:h-12 sm:w-[220px] lg:h-12 lg:w-[260px]"
       }`}
     >
       <Image
-        src="/logo.jpeg" // ✅ SAME LOGO FOR ALL MODES
-        alt="LetsCode Logo"
-        width={170}
-        height={48}
+        src="/whitelog.jpeg"
+        alt="LetsCode logo"
+        width={width}
+        height={height}
         priority
-        sizes="170px"
-        className="h-full w-full object-contain"
+        sizes={
+          mobile
+            ? "170px"
+            : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 180px"
+        }
+        className="h-full w-full object-contain dark:hidden"
+      />
+      <Image
+        src="/logo.jpeg"
+        alt="LetsCode logo"
+        width={width}
+        height={height}
+        priority
+        sizes={
+          mobile
+            ? "170px"
+            : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 180px"
+        }
+        style={{ height: "115%", width: "115%", objectFit: "contain" }}
+        className="hidden h-full w-full object-contain dark:block"
       />
     </div>
   );
-}
+});
+
+const DesktopLinks = memo(function DesktopLinks({
+  pathname,
+}: {
+  pathname: string | null;
+}) {
+  return (
+    <>
+      {navLinks.map((link) => {
+        const active = isLinkActive(pathname, link.href);
+        return (
+          <Link
+            key={link.name}
+            href={link.href}
+            className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              active
+                ? "bg-blue-600/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-300"
+                : "text-slate-700 hover:bg-white/40 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-300"
+            }`}
+          >
+            {link.name}
+          </Link>
+        );
+      })}
+    </>
+  );
+});
+
+const MobileDrawer = memo(function MobileDrawer({
+  open,
+  onClose,
+  pathname,
+  onToggleTheme,
+}: {
+  open: boolean;
+  onClose: () => void;
+  pathname: string | null;
+  onToggleTheme: () => void;
+}) {
+  return (
+    <div
+      className={`fixed inset-0 -top-4 left-1/2 h-screen w-screen -translate-x-1/2 transition-opacity duration-300 ${
+        open ? "visible opacity-100" : "invisible opacity-0"
+      }`}
+      aria-hidden={!open}
+    >
+      <div
+        className="absolute inset-0 bg-slate-900/20 backdrop-blur-2xl dark:bg-black/40"
+        onClick={onClose}
+      />
+
+      <aside
+        className={`absolute right-4 top-4 bottom-4 w-[90%] max-w-[380px] rounded-3xl border border-white/30 bg-white/70 p-6 shadow-2xl transition-transform duration-300 dark:border-white/10 dark:bg-slate-900/80 ${
+          open ? "translate-x-0" : "translate-x-[110%]"
+        }`}
+      >
+        {open ? (
+          <div className="flex flex-col h-full">
+            <div className="mb-8 flex items-center justify-between">
+              <BrandLogo mobile />
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full bg-slate-200/50 p-2 text-slate-800 dark:bg-white/10 dark:text-white"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {navLinks.map((link) => {
+                const active = isLinkActive(pathname, link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={onClose}
+                    className={`flex items-center justify-between rounded-2xl px-5 py-4 text-lg font-bold transition-colors ${
+                      active
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                        : "bg-white/40 text-slate-700 hover:bg-white/80 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                    }`}
+                  >
+                    {link.name}
+                    <ChevronRight
+                      size={18}
+                      className={active ? "opacity-100" : "opacity-40"}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mt-auto pt-6">
+              <button
+                type="button"
+                onClick={onToggleTheme}
+                className="mb-4 flex w-full items-center justify-between rounded-2xl bg-white/40 px-5 py-4 font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-300"
+              >
+                <span>Switch Mode</span>
+                <div className="flex items-center gap-2">
+                  <Sun className="h-5 w-5 dark:text-blue-300" />
+                  <Moon className="h-5 w-5 text-blue-600" />
+                </div>
+              </button>
+              <Link
+                href="/contact"
+                onClick={onClose}
+                className="flex w-full items-center justify-center rounded-2xl bg-slate-950 py-4 text-lg font-bold text-white shadow-xl dark:bg-white dark:text-slate-950"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+        ) : null}
+      </aside>
+    </div>
+  );
+});
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { toggleTheme } = useTheme();
 
-  // ✅ Lock scroll when menu is open
+  const openMenu = useCallback(() => setOpen(true), []);
+  const closeMenu = useCallback(() => setOpen(false), []);
+
+  // Lock body scroll while the drawer is open and restore the previous value
+  // (instead of forcing it back to "auto" which clobbers user/global styles).
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [open]);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === href : pathname.startsWith(href);
-
   return (
-    <header className="fixed top-0 left-0 z-50 w-full border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-slate-950/90">
-      {/* NAV */}
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-10">
-        {/* LOGO */}
-        <Link href="/" className="flex items-center" aria-label="LetsCode home">
+    <header className="fixed top-4 left-1/2 z-50 w-[95%] max-w-7xl -translate-x-1/2">
+      <nav className="relative flex h-16 items-center justify-between rounded-2xl border border-white/20 bg-white/40 px-4 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 lg:h-20 lg:px-8">
+        <Link href="/" className="flex items-center">
           <BrandLogo />
         </Link>
 
-        {/* DESKTOP MENU */}
-        <div className="hidden items-center gap-5 lg:flex xl:gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={`relative inline-flex items-center px-2.5 py-1 text-sm font-semibold transition ${
-                isActive(link.href)
-                  ? "text-blue-600 after:scale-x-100 dark:text-blue-300"
-                  : "text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-300"
-              } after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:rounded-full after:bg-blue-600 after:scale-x-0 after:transition-transform after:duration-300 after:content-[''] dark:after:bg-blue-300`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="hidden items-center gap-2 lg:flex">
+          <DesktopLinks pathname={pathname} />
 
-          {/* THEME BUTTON */}
+          <div className="mx-2 h-6 w-px bg-slate-200/50 dark:bg-white/10" />
+
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label="Toggle color theme"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/5 dark:text-blue-200 dark:hover:bg-white/10 dark:focus:ring-blue-400/20"
+            aria-label="Toggle theme"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/20 text-slate-700 shadow-sm transition-colors hover:bg-white/60 dark:border-white/10 dark:bg-white/5 dark:text-blue-200 dark:hover:bg-white/10"
           >
-            <Moon className="h-[19px] w-[19px] dark:hidden" />
-            <Sun className="hidden h-[19px] w-[19px] dark:block" />
+            <Moon className="h-5 w-5 dark:hidden" />
+            <Sun className="hidden h-5 w-5 dark:block" />
           </button>
 
-          {/* CTA */}
           <Link
             href="/contact"
-            className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
+            className="ml-2 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-colors hover:bg-blue-700 active:scale-95"
           >
             Get Started
           </Link>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
         <button
-          onClick={() => setOpen(true)}
+          type="button"
+          onClick={openMenu}
           aria-label="Open menu"
           aria-expanded={open}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-blue-600 shadow-sm transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-blue-200 lg:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/40 bg-white/20 text-blue-600 dark:border-white/10 dark:bg-white/5 dark:text-blue-300 lg:hidden"
         >
-          <Menu size={26} />
+          <Menu size={24} />
         </button>
       </nav>
 
-      {/* MOBILE DRAWER */}
-      <div
-        className={`fixed inset-0 z-40 transition-all duration-300 ${
-          open ? "visible opacity-100" : "invisible opacity-0"
-        }`}
-      >
-        {/* BACKDROP */}
-        <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        />
-
-        {/* SIDEBAR */}
-        <aside
-          className={`absolute right-0 top-0 h-full w-[85%] max-w-sm border-l border-slate-200 bg-white p-6 text-slate-900 shadow-2xl transition-transform duration-300 dark:border-white/10 dark:bg-slate-950 dark:text-white ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          {/* HEADER */}
-          <div className="mb-8 flex items-center justify-between">
-            <BrandLogo mobile />
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              className="rounded-xl border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
-            >
-              <X size={22} />
-            </button>
-          </div>
-
-          {/* THEME SWITCH */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="mb-8 inline-flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
-          >
-            <span className="dark:hidden">Switch to night mode</span>
-            <span className="hidden dark:inline">Switch to day mode</span>
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-blue-600 shadow-sm dark:bg-slate-900 dark:text-blue-200">
-              <Moon className="h-[18px] w-[18px] dark:hidden" />
-              <Sun className="hidden h-[18px] w-[18px] dark:block" />
-            </span>
-          </button>
-
-          {/* LINKS */}
-          <div className="mt-2 rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-950">
-            {navLinks.map((link, idx) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className={`group flex items-center justify-between px-5 py-4 text-lg font-medium tracking-tight transition ${
-                  isActive(link.href)
-                    ? "text-slate-950 dark:text-white"
-                    : "text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
-                }`}
-              >
-                <span className="relative">
-                  {link.name}
-                  <span
-                    className={`pointer-events-none absolute -bottom-2 left-0 h-0.5 w-8 rounded-full transition ${
-                      isActive(link.href)
-                        ? "bg-blue-600 dark:bg-blue-300"
-                        : "bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-white/10"
-                    }`}
-                    aria-hidden="true"
-                  />
-                </span>
-                <span
-                  className={`text-xs font-semibold tracking-wide transition ${
-                    isActive(link.href)
-                      ? "text-blue-600/80 dark:text-blue-200/80"
-                      : "text-slate-400 group-hover:text-slate-500 dark:text-slate-500 dark:group-hover:text-slate-400"
-                  }`}
-                  aria-hidden="true"
-                >
-                  →
-                </span>
-                {idx !== navLinks.length - 1 && (
-                  <span
-                    className="pointer-events-none absolute left-5 right-5 mt-[3.75rem] border-b border-slate-100 dark:border-white/5"
-                    aria-hidden="true"
-                  />
-                )}
-              </Link>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="mt-10">
-            <Link
-              href="/contact"
-              onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-900 dark:bg-white dark:text-slate-950 dark:hover:bg-white/90"
-            >
-              Get Started
-            </Link>
-          </div>
-        </aside>
-      </div>
+      <MobileDrawer
+        open={open}
+        onClose={closeMenu}
+        pathname={pathname}
+        onToggleTheme={toggleTheme}
+      />
     </header>
   );
 }

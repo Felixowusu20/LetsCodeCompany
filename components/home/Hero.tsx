@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 export type HeroSlideInput = {
   id: string | number;
@@ -13,7 +20,7 @@ export type HeroSlideInput = {
 const defaultSlides: HeroSlideInput[] = [
   {
     id: 1,
-    title: "Welcome to LetsCode",
+    title: "Welcome to ZeoFex",
     subtitle:
       "We build modern, scalable web applications that drive your business forward.",
     image:
@@ -40,73 +47,104 @@ const defaultSlides: HeroSlideInput[] = [
 ];
 
 export default function Hero({ slides: propSlides }: { slides?: HeroSlideInput[] }) {
-  const slides = useMemo(() => {
-    if (propSlides && propSlides.length > 0) return propSlides;
-    return defaultSlides;
-  }, [propSlides]);
+  const slides = useMemo(
+    () => (propSlides && propSlides.length > 0 ? propSlides : defaultSlides),
+    [propSlides],
+  );
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Autoplay, but only when the tab is visible. Wrapped in startTransition so
+  // React can interrupt this update if a real user interaction shows up.
   useEffect(() => {
-    const timer = setInterval(() => {
+    if (slides.length <= 1) return;
+    const tick = () => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      startTransition(() => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+      });
+    };
+    const timer = window.setInterval(tick, 5000);
+    return () => window.clearInterval(timer);
+  }, [slides.length]);
+
+  // Stable handlers; transitions keep clicks responsive (the click commits
+  // immediately, the heavy re-render is scheduled cooperatively).
+  const goTo = useCallback(
+    (index: number) => {
+      startTransition(() => {
+        setCurrentSlide(((index % slides.length) + slides.length) % slides.length);
+      });
+    },
+    [slides.length],
+  );
+  const nextSlide = useCallback(() => {
+    startTransition(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [slides]);
-
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
-
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    });
+  }, [slides.length]);
+  const prevSlide = useCallback(() => {
+    startTransition(() => {
+      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    });
+  }, [slides.length]);
 
   const slide = slides[currentSlide];
 
   return (
-    <section className="relative flex h-screen items-center overflow-hidden">
-      {slides.map((s, index) => (
-        <div
-          key={String(s.id)}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-          style={{
-            backgroundImage: `url(${s.image})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-transparent" />
-        </div>
-      ))}
+    <section className="relative flex min-h-[calc(100svh-5rem)] items-center overflow-hidden sm:min-h-[calc(100svh-5.25rem)]">
+      {slides.map((s, index) => {
+        const active = index === currentSlide;
+        return (
+          <div
+            key={String(s.id)}
+            aria-hidden={!active}
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              active ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <Image
+              src={s.image}
+              alt=""
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-transparent" />
+          </div>
+        );
+      })}
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 text-white lg:px-10">
-        <div className="max-w-2xl drop-shadow-lg" data-aos="fade-up">
-          <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
-            {slide.title.split("LetsCode").map((part, index) =>
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 text-white sm:px-6 lg:px-10">
+        <div className="max-w-2xl drop-shadow-lg">
+          <h1 className="mb-5 text-3xl font-bold leading-tight tracking-tight sm:mb-6 sm:text-4xl md:text-6xl">
+            {slide.title.split("ZeoFex").map((part, index) =>
               index === 0 ? (
                 part
               ) : (
                 <span key={index} className="text-blue-400">
-                  LetsCode{part}
+                  ZeoFex{part}
                 </span>
               ),
             )}
           </h1>
 
-          <p className="mb-10 text-lg leading-relaxed text-white/90 md:text-xl" data-aos="fade-up" data-aos-delay="120">
+          <p className="mb-8 max-w-xl text-base leading-relaxed text-white/90 sm:mb-10 sm:text-lg md:text-xl">
             {slide.subtitle}
           </p>
 
-          <div className="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="180">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
             <button
               type="button"
-              className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-3 font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:-translate-y-[2px] hover:shadow-blue-500/50 active:scale-[0.97]"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-transform duration-200 hover:-translate-y-[2px] focus:outline-none focus:ring-4 focus:ring-blue-200/30 active:scale-[0.98] sm:w-auto sm:px-8"
             >
               {slide.cta}
             </button>
 
             <button
               type="button"
-              className="rounded-xl border border-white/40 px-8 py-3 font-semibold text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black"
+              className="inline-flex w-full items-center justify-center rounded-xl border border-white/40 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white hover:text-black focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto sm:px-8"
             >
               Learn More
             </button>
@@ -117,7 +155,8 @@ export default function Hero({ slides: propSlides }: { slides?: HeroSlideInput[]
       <button
         type="button"
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-md transition hover:bg-white/30"
+        aria-label="Previous slide"
+        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/30 focus:outline-none focus:ring-4 focus:ring-white/20 sm:left-4"
       >
         ‹
       </button>
@@ -125,18 +164,20 @@ export default function Hero({ slides: propSlides }: { slides?: HeroSlideInput[]
       <button
         type="button"
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-md transition hover:bg-white/30"
+        aria-label="Next slide"
+        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/30 focus:outline-none focus:ring-4 focus:ring-white/20 sm:right-4"
       >
         ›
       </button>
 
-      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2" data-aos="fade-up" data-aos-delay="260">
+      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             type="button"
-            onClick={() => setCurrentSlide(index)}
-            className={`h-2.5 rounded-full transition-all ${
+            onClick={() => goTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
+            className={`h-2.5 rounded-full transition-all focus:outline-none focus:ring-4 focus:ring-white/20 ${
               index === currentSlide ? "w-8 bg-white" : "w-3 bg-white/50"
             }`}
           />

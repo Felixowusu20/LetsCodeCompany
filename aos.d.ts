@@ -6,6 +6,8 @@ declare module "aos" {
     once?: boolean;
     mirror?: boolean;
     offset?: number;
+    /** "phone" | "tablet" | "mobile" | "reduced-motion" | boolean | () => boolean */
+    disable?: string | boolean | (() => boolean);
   }
 
   interface AosApi {

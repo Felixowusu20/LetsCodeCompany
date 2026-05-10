@@ -107,3 +107,61 @@ model ContactSubmission {
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 }
+
+/// Singleton row that powers the About page and the homepage About section.
+/// We always read/write the first row; missing fields fall back to defaults.
+model AboutContent {
+  id String @id @default(cuid())
+
+  heroEyebrow  String @default("About ZeoFex")
+  heroTitle    String @default("Powerful service design for modern product teams.")
+  heroSubtitle String @default("We combine engineering, design, and strategy to build digital products that feel premium and scale effortlessly.")
+
+  storyTitle      String   @default("Our Story")
+  storyParagraphs String[] @default([])
+  storyImage      String   @default("")
+
+  missionTitle String @default("Our Mission")
+  missionText  String @default("")
+  missionImage String @default("")
+
+  visionTitle String @default("Our Vision")
+  visionText  String @default("")
+  visionImage String @default("")
+
+  valuesTitle    String @default("Our Values")
+  valuesSubtitle String @default("The principles that guide our work and shape every customer experience.")
+  /// Array of { title: string; desc: string; image: string }
+  values         Json   @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Singleton row for site footer (company blurb, link columns, CTA, legal).
+model FooterContent {
+  id String @id @default(cuid())
+
+  companyName String @default("ZeoFex")
+  tagline     String @default("Building reliable websites, apps, AI tools, and digital platforms for modern teams.")
+
+  exploreColumnTitle String @default("Explore")
+  /// Array of { label: string; href: string }
+  exploreLinks Json @default("[]")
+
+  companyColumnTitle String @default("Company")
+  /// Array of { label: string; href: string }
+  companyLinks Json @default("[]")
+
+  ctaTitle       String @default("Let us turn your ideas into reality")
+  ctaBody        String @default("ready to start a project or just want to say hi? We are here to help you build something great.")
+  ctaButtonLabel String @default("Book a Call")
+  ctaButtonHref  String @default("/contact")
+
+  copyrightText String @default("© 2026 ZeoFex. All rights reserved.")
+  termsLabel    String @default("Terms & Conditions")
+  termsHref     String @default("/terms")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

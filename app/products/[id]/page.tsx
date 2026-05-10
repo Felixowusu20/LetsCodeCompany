@@ -26,22 +26,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className="bg-slate-50">
-      <section className="bg-white py-24">
+      <section className="bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-12">
             <div data-aos="fade-right">
               <Link href="/products" className="mb-4 inline-block text-blue-600 hover:text-blue-700">
                 ← Back to Products
               </Link>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-600">Product</p>
               <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">{product.name}</h1>
-              <p className="mt-6 text-lg leading-8 text-slate-600">{product.description}</p>
+              <p className="mt-5 text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{product.description}</p>
               {cta ? (
                 <a
                   href={cta.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-8 inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
+                  className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700 sm:w-auto"
                 >
                   {cta.label}
                 </a>
@@ -51,7 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   {product.tags.map((t) => (
                     <span
                       key={t}
-                      className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-700"
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 sm:text-sm"
                     >
                       {t}
                     </span>
@@ -60,7 +60,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               ) : null}
             </div>
             <div
-              className="relative h-96 overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-xl"
+              className="relative h-72 overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-xl sm:h-96"
               data-aos="zoom-in"
               data-aos-delay="100"
             >

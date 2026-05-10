@@ -38,7 +38,7 @@ export default async function Products({ searchParams }: ProductsPageProps) {
     <main className="bg-slate-50">
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-slate-950/80 to-slate-950" />
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="max-w-3xl" data-aos="fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.32em] text-blue-300">Products</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Explore our apps</h1>
@@ -63,19 +63,19 @@ export default async function Products({ searchParams }: ProductsPageProps) {
                     name="q"
                     defaultValue={q}
                     placeholder="Search apps, tags, and descriptions…"
-                    className="w-full rounded-2xl border border-white/10 bg-white/10 px-12 py-4 text-sm text-white placeholder:text-slate-300 shadow-lg shadow-blue-950/30 outline-none transition focus:border-blue-300/60 focus:ring-4 focus:ring-blue-400/20"
+                    className="w-full rounded-2xl border border-white/10 bg-white/10 px-12 py-3.5 text-sm text-white placeholder:text-slate-300 shadow-lg shadow-blue-950/30 outline-none transition focus:border-blue-300/60 focus:ring-4 focus:ring-blue-400/20 sm:py-4"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-4 text-sm font-semibold text-slate-900 shadow-lg shadow-blue-950/30 transition hover:bg-slate-100"
+                  className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 shadow-lg shadow-blue-950/30 transition hover:bg-slate-100 sm:py-4"
                 >
                   Search
                 </button>
                 {q ? (
                   <Link
                     href="/products"
-                    className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-sm font-semibold text-white/90 transition hover:bg-white/10"
+                    className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:bg-white/10 sm:py-4"
                   >
                     Clear
                   </Link>
@@ -88,7 +88,7 @@ export default async function Products({ searchParams }: ProductsPageProps) {
 
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <h2 className="text-lg font-bold text-slate-900 sm:text-xl">All apps</h2>
             <p className="text-sm text-slate-600">
               {filtered.length} result{filtered.length === 1 ? "" : "s"}

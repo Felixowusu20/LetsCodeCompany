@@ -19,10 +19,10 @@ export default async function Team() {
                Our Team
             </p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-             Meet the Clonify team
+             Meet the Great Minds of ZeoFex
             </h1>
             <p className="mt-6 text-lg leading-8 text-slate-200">
-              The Team behind LetsCode is a group of passionate individuals dedicated to creating innovative solutions for modern product teams. With a diverse range of skills and expertise, our team is committed to delivering exceptional products and services that drive success for our clients.
+              The Team behind ZeoFex is a group of passionate individuals dedicated to creating innovative solutions for modern product teams. With a diverse range of skills and expertise, our team is committed to delivering exceptional products and services that drive success for our clients.
              </p>
           </div>
         </div>

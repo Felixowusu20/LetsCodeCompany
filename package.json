@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
+    "legal:export": "tsx scripts/export-legal-markdown.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
