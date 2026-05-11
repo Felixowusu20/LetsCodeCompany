@@ -75,6 +75,8 @@ model HeroSlide {
   title     String
   subtitle  String
   image     String
+  /// Optional direct video file URL (.mp4 / .webm). YouTube/Vimeo page URLs are not supported.
+  videoUrl  String?
   cta       String   @default("Get Started")
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())

@@ -272,7 +272,14 @@ export const mockPartners = [
   },
 ];
 
-export const mockHeroSlides = [
+export const mockHeroSlides: {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  cta: string;
+  videoUrl?: string | null;
+}[] = [
   {
     id: 1,
     title: "Welcome to ZeoFex",

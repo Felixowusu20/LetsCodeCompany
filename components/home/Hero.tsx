@@ -6,8 +6,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
+
+import { getVideoEmbedKind, parseYouTubeVideoId } from "@/lib/videoEmbed";
 
 export type HeroSlideInput = {
   id: string | number;
@@ -15,6 +19,7 @@ export type HeroSlideInput = {
   subtitle: string;
   image: string;
   cta: string;
+  videoUrl?: string | null;
 };
 
 const defaultSlides: HeroSlideInput[] = [
@@ -45,6 +50,144 @@ const defaultSlides: HeroSlideInput[] = [
     cta: "Contact Us",
   },
 ];
+
+const unsupportedFileVideoHosts = ["vimeo.com", "player.vimeo.com"];
+
+function subscribePrefersReducedMotion(onChange: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+function getPrefersReducedMotionSnapshot() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function normalizeFileVideoUrl(videoUrl?: string | null) {
+  const trimmed = videoUrl?.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("/")) return trimmed;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    return null;
+  }
+
+  if (!["http:", "https:"].includes(parsed.protocol)) return null;
+
+  const host = parsed.hostname.replace(/^www\./, "");
+  if (unsupportedFileVideoHosts.some((blocked) => host === blocked || host.endsWith(`.${blocked}`))) {
+    return null;
+  }
+
+  return parsed.toString();
+}
+
+function youtubeHeroEmbedSrc(videoId: string) {
+  const q = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    controls: "0",
+    playsinline: "1",
+    loop: "1",
+    playlist: videoId,
+    modestbranding: "1",
+    rel: "0",
+  });
+  return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${q}`;
+}
+
+function HeroSlideBackdrop({
+  image,
+  videoUrl,
+  active,
+  priority,
+}: {
+  image: string;
+  videoUrl?: string | null;
+  active: boolean;
+  priority: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const raw = videoUrl?.trim() ?? "";
+  const embedKind = raw ? getVideoEmbedKind(raw) : null;
+  const youtubeId = embedKind === "youtube" ? parseYouTubeVideoId(raw) : null;
+  const fileVideoUrl = embedKind === "file" ? normalizeFileVideoUrl(videoUrl) : null;
+
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribePrefersReducedMotion,
+    getPrefersReducedMotionSnapshot,
+    () => false,
+  );
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !fileVideoUrl) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      const v = videoRef.current;
+      if (!v) return;
+      if (mq.matches || !active) {
+        v.pause();
+      } else {
+        void v.play().catch(() => {});
+      }
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [active, fileVideoUrl]);
+
+  const showYoutubeEmbed =
+    Boolean(youtubeId) && active && !prefersReducedMotion;
+
+  return (
+    <>
+      <Image
+        src={image}
+        alt=""
+        fill
+        priority={priority}
+        sizes="100vw"
+        className="z-0 object-cover"
+      />
+      {showYoutubeEmbed && youtubeId ? (
+        <div
+          className="hero-bg-video pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+          aria-hidden
+        >
+          <iframe
+            key={youtubeId}
+            title=""
+            src={youtubeHeroEmbedSrc(youtubeId)}
+            className="absolute left-1/2 top-1/2 h-full min-h-[56.25vw] w-[177.78vh] min-w-full max-w-none -translate-x-1/2 -translate-y-1/2 border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        </div>
+      ) : null}
+      {fileVideoUrl ? (
+        <video
+          key={fileVideoUrl}
+          ref={videoRef}
+          src={fileVideoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={image}
+          preload="metadata"
+          className="hero-bg-video pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover"
+          aria-hidden
+        />
+      ) : null}
+      <div className="absolute inset-0 z-[2] bg-gradient-to-r from-black/50 via-black/25 to-transparent" />
+    </>
+  );
+}
 
 export default function Hero({ slides: propSlides }: { slides?: HeroSlideInput[] }) {
   const slides = useMemo(
@@ -103,15 +246,14 @@ export default function Hero({ slides: propSlides }: { slides?: HeroSlideInput[]
               active ? "opacity-100" : "opacity-0"
             }`}
           >
-            <Image
-              src={s.image}
-              alt=""
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/25 to-transparent" />
+            <div className="absolute inset-0">
+              <HeroSlideBackdrop
+                image={s.image}
+                videoUrl={s.videoUrl}
+                active={active}
+                priority={index === 0}
+              />
+            </div>
           </div>
         );
       })}

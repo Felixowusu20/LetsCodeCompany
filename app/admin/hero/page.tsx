@@ -11,14 +11,15 @@ type HeroSlide = {
   title: string;
   subtitle: string;
   image: string;
+  videoUrl: string | null;
   cta: string;
   sortOrder: number;
 };
 
-type Draft = Omit<HeroSlide, "id"> & { id?: string };
+type Draft = Omit<HeroSlide, "id" | "videoUrl"> & { id?: string; videoUrl: string };
 
 function emptyDraft(): Draft {
-  return { title: "", subtitle: "", image: "", cta: "Get Started", sortOrder: 0 };
+  return { title: "", subtitle: "", image: "", videoUrl: "", cta: "Get Started", sortOrder: 0 };
 }
 
 export default function AdminHeroPage() {
@@ -54,7 +55,15 @@ export default function AdminHeroPage() {
 
   function startEdit(s: HeroSlide) {
     setEditingId(s.id);
-    setDraft({ id: s.id, title: s.title, subtitle: s.subtitle, image: s.image, cta: s.cta, sortOrder: s.sortOrder });
+    setDraft({
+      id: s.id,
+      title: s.title,
+      subtitle: s.subtitle,
+      image: s.image,
+      videoUrl: s.videoUrl ?? "",
+      cta: s.cta,
+      sortOrder: s.sortOrder,
+    });
   }
 
   async function onSave() {
@@ -63,6 +72,7 @@ export default function AdminHeroPage() {
       title: draft.title.trim(),
       subtitle: draft.subtitle.trim(),
       image: draft.image.trim(),
+      videoUrl: (draft.videoUrl ?? "").trim() || null,
       cta: draft.cta.trim() || "Get Started",
       sortOrder: Number.isFinite(draft.sortOrder) ? draft.sortOrder : 0,
     };
@@ -129,7 +139,14 @@ export default function AdminHeroPage() {
                     <div className="min-w-0">
                       <div className="truncate font-semibold text-slate-900 dark:text-white">{s.title}</div>
                       <div className="mt-0.5 line-clamp-1 text-sm text-slate-600 dark:text-slate-300">{s.subtitle}</div>
-                      <div className="mt-0.5 text-xs text-slate-500">Order: {s.sortOrder}</div>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+                        <span>Order: {s.sortOrder}</span>
+                        {s.videoUrl ? (
+                          <span className="rounded-md bg-blue-100 px-1.5 py-0.5 font-medium text-blue-800 dark:bg-blue-500/20 dark:text-blue-200">
+                            Video
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                   <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{s.cta}</div>
@@ -182,6 +199,26 @@ export default function AdminHeroPage() {
               />
             </label>
             <ImageUpload label="Background image" value={draft.image} onChange={(url) => setDraft((d) => ({ ...d, image: url }))} />
+            <label className="block">
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                Background video URL (optional)
+              </span>
+              <input
+                value={draft.videoUrl ?? ""}
+                onChange={(e) => setDraft((d) => ({ ...d, videoUrl: e.target.value }))}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-blue-300 dark:focus:ring-blue-400/20"
+                placeholder="https://www.youtube.com/watch?v=… or https://example.com/background.mp4"
+                inputMode="url"
+                autoComplete="off"
+              />
+              <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                <strong className="font-medium text-slate-600 dark:text-slate-300">YouTube</strong> links (watch, embed, Shorts,{" "}
+                <span className="whitespace-nowrap">youtu.be</span>) or direct{" "}
+                <strong className="font-medium text-slate-600 dark:text-slate-300">.mp4</strong> /{" "}
+                <strong className="font-medium text-slate-600 dark:text-slate-300">.webm</strong> file URLs work. The background
+                image stays as fallback and shows when motion is reduced (embedded video does not autoplay then).
+              </p>
+            </label>
             <label className="block">
               <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">CTA label</span>
               <input

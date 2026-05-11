@@ -179,4 +179,9 @@ body {
   .animate-ping {
     animation: none !important;
   }
+
+  /* Direct <video> and YouTube backdrop wrappers share .hero-bg-video */
+  .hero-bg-video {
+    display: none !important;
+  }
 }
