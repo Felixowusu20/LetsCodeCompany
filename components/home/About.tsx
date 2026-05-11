@@ -43,7 +43,7 @@ const About = async ({ content }: Props) => {
         </div>
       </section>
 
-      <section className="py-24">
+      <section className="bg-background py-24">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
           {data.storyImage ? (
             <div className="rounded-3xl overflow-hidden shadow-xl" data-aos="fade-right">
@@ -55,19 +55,19 @@ const About = async ({ content }: Props) => {
               />
             </div>
           ) : (
-            <div className="h-[320px] rounded-3xl bg-slate-100 sm:h-[420px] lg:h-[520px]" aria-hidden="true" />
+            <div className="h-[320px] rounded-3xl bg-slate-100 dark:bg-slate-800 sm:h-[420px] lg:h-[520px]" aria-hidden="true" />
           )}
 
           <div data-aos="fade-left">
             {data.storyTitle ? (
-              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">
                 {data.storyTitle}
               </h2>
             ) : null}
             {data.storyParagraphs.map((paragraph, idx) => (
               <p
                 key={idx}
-                className={`${idx === 0 ? "mt-5 sm:mt-6" : "mt-4"} leading-relaxed text-slate-600`}
+                className={`${idx === 0 ? "mt-5 sm:mt-6" : "mt-4"} leading-relaxed text-slate-600 dark:text-slate-300`}
               >
                 {paragraph}
               </p>
@@ -77,12 +77,12 @@ const About = async ({ content }: Props) => {
       </section>
 
       {missionVision.length > 0 ? (
-        <section className="py-24 bg-slate-50">
+        <section className="bg-slate-50 py-24 dark:bg-slate-950">
           <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-2 lg:gap-8 lg:px-10">
             {missionVision.map((item, index) => (
               <div
                 key={item.title || index}
-                className="rounded-3xl overflow-hidden bg-white shadow-lg"
+                className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-lg dark:border-white/10 dark:bg-slate-900"
                 data-aos="fade-up"
                 data-aos-delay={index * 120}
               >
@@ -98,10 +98,10 @@ const About = async ({ content }: Props) => {
                 ) : null}
                 <div className="p-6 sm:p-10">
                   {item.title ? (
-                    <h3 className="text-2xl font-bold text-slate-900">{item.title}</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{item.title}</h3>
                   ) : null}
                   {item.text ? (
-                    <p className="mt-4 text-slate-600 leading-relaxed">{item.text}</p>
+                    <p className="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">{item.text}</p>
                   ) : null}
                 </div>
               </div>
@@ -111,13 +111,13 @@ const About = async ({ content }: Props) => {
       ) : null}
 
       {data.values.length > 0 ? (
-        <section className="py-24">
+        <section className="bg-background py-24">
           <div className="mx-auto mb-10 max-w-7xl px-4 text-center sm:mb-12 sm:px-6 lg:px-10" data-aos="fade-up">
             {data.valuesTitle ? (
-              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">{data.valuesTitle}</h2>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">{data.valuesTitle}</h2>
             ) : null}
             {data.valuesSubtitle ? (
-              <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
+              <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
                 {data.valuesSubtitle}
               </p>
             ) : null}
@@ -127,7 +127,7 @@ const About = async ({ content }: Props) => {
             {data.values.map((value, index) => (
               <div
                 key={value.title || index}
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-xl"
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-xl dark:border-white/10 dark:bg-slate-900"
                 data-aos="fade-up"
                 data-aos-delay={index * 90}
               >
@@ -143,10 +143,10 @@ const About = async ({ content }: Props) => {
                 ) : null}
                 <div className="p-6 sm:p-8">
                   {value.title ? (
-                    <h3 className="text-xl font-semibold text-slate-900">{value.title}</h3>
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{value.title}</h3>
                   ) : null}
                   {value.desc ? (
-                    <p className="mt-3 text-slate-600">{value.desc}</p>
+                    <p className="mt-3 text-slate-600 dark:text-slate-300">{value.desc}</p>
                   ) : null}
                 </div>
               </div>

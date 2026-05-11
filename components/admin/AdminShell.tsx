@@ -106,7 +106,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">ZeoFex</p>
               <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white lg:text-3xl">{crumbs}</h1>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                 Signed in as <span className="font-semibold text-slate-900 dark:text-slate-200">{email ?? "…"}</span>
               </p>
             </div>
@@ -168,7 +168,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-slate-900 dark:text-white">Admin</p>
-                      <p className="truncate text-xs text-slate-500 dark:text-slate-400">{email ?? "…"}</p>
+                      <p className="truncate text-xs text-slate-500 dark:text-slate-300">{email ?? "…"}</p>
                     </div>
                   </div>
                   <button

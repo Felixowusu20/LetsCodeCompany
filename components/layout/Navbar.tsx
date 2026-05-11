@@ -31,15 +31,15 @@ const BrandLogo = memo(function BrandLogo({
   lightSrc: string;
   darkSrc: string;
 }) {
-  const width = mobile ? 170 : 260;
-  const height = mobile ? 40 : 48;
+  const width = mobile ? 220 : 360;
+  const height = mobile ? 52 : 60;
 
   return (
     <div
-      className={`inline-flex items-center justify-center overflow-hidden transition ${
+      className={`inline-flex items-center justify-center overflow-hidden ${
         mobile
-          ? "h-10 w-[170px]"
-          : "h-10 w-[180px] sm:h-12 sm:w-[220px] lg:h-12 lg:w-[260px]"
+          ? "h-12 w-[220px]"
+          : "h-12 w-[240px] sm:h-14 sm:w-[300px] lg:h-14 lg:w-[360px]"
       }`}
     >
       <Image
@@ -50,10 +50,10 @@ const BrandLogo = memo(function BrandLogo({
         priority
         sizes={
           mobile
-            ? "170px"
-            : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 180px"
+            ? "220px"
+            : "(min-width: 1024px) 360px, (min-width: 640px) 300px, 240px"
         }
-        className="h-full w-full object-contain dark:hidden"
+        className="h-full w-full object-contain object-left dark:hidden"
       />
       <Image
         src={darkSrc}
@@ -63,11 +63,10 @@ const BrandLogo = memo(function BrandLogo({
         priority
         sizes={
           mobile
-            ? "170px"
-            : "(min-width: 1024px) 260px, (min-width: 640px) 220px, 180px"
+            ? "220px"
+            : "(min-width: 1024px) 360px, (min-width: 640px) 300px, 240px"
         }
-        style={{ height: "115%", width: "115%", objectFit: "contain" }}
-        className="hidden h-full w-full object-contain dark:block"
+        className="hidden h-full w-full scale-[1.06] object-contain object-left dark:block"
       />
     </div>
   );
@@ -89,7 +88,7 @@ const DesktopLinks = memo(function DesktopLinks({
             className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
               active
                 ? "bg-blue-600/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-300"
-                : "text-slate-700 hover:bg-white/40 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-300"
+                : "text-slate-700 hover:bg-white/40 hover:text-blue-600 dark:text-slate-200 dark:hover:bg-white/5 dark:hover:text-blue-300"
             }`}
           >
             {link.name}
