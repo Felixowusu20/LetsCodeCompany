@@ -24,8 +24,14 @@ export type HomeHeroSlide = {
   title: string;
   subtitle: string;
   image: string;
+  videoUrl?: string | null;
   cta: string;
 };
+
+function trimmedOrNull(value?: string | null) {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
 
 export type TeamMember = {
   id: string;
@@ -84,6 +90,7 @@ export async function getHomeHeroSlides(): Promise<HomeHeroSlide[]> {
         title: s.title,
         subtitle: s.subtitle,
         image: s.image,
+        videoUrl: trimmedOrNull(s.videoUrl),
         cta: s.cta,
       }));
     }
@@ -92,6 +99,7 @@ export async function getHomeHeroSlides(): Promise<HomeHeroSlide[]> {
       title: s.title,
       subtitle: s.subtitle,
       image: s.image,
+      videoUrl: trimmedOrNull(s.videoUrl),
       cta: s.cta,
     }));
   } catch {
@@ -100,6 +108,7 @@ export async function getHomeHeroSlides(): Promise<HomeHeroSlide[]> {
       title: s.title,
       subtitle: s.subtitle,
       image: s.image,
+      videoUrl: trimmedOrNull(s.videoUrl),
       cta: s.cta,
     }));
   }

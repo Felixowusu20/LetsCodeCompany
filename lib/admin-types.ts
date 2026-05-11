@@ -55,6 +55,7 @@ export type HeroSlide = {
   title: string;
   subtitle: string;
   image: string;
+  videoUrl?: string | null;
   cta: string;
   sortOrder: number;
 };
