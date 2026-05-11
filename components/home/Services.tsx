@@ -8,15 +8,15 @@ export default async function Services() {
     <>
       {/* HEADER */}
       <div className="mb-12 text-center sm:mb-20" data-aos="fade-up">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600 dark:text-blue-400">
           What We Do
         </p>
 
-        <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">
+        <h2 className="mt-3 text-3xl font-bold text-gray-900 dark:text-slate-100 sm:text-4xl md:text-5xl">
           Our Services
         </h2>
 
-        <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 sm:text-lg">
+        <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 dark:text-slate-300 sm:text-lg">
           We deliver modern digital solutions that help businesses grow and scale.
         </p>
       </div>
@@ -62,16 +62,19 @@ export default async function Services() {
       </div>
 
       {/* CTA BLOCK */}
-      <div className="mt-16 rounded-2xl bg-blue-50 p-8 text-center sm:mt-24 sm:p-14" data-aos="fade-up">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
+      <div
+        className="mt-16 rounded-2xl border border-transparent bg-blue-50 p-8 text-center dark:border-blue-500/25 dark:bg-slate-900/90 sm:mt-24 sm:p-14"
+        data-aos="fade-up"
+      >
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400">
           Ready to get started?
         </p>
 
-        <h3 className="mt-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+        <h3 className="mt-4 text-2xl font-bold text-gray-900 dark:text-slate-100 sm:text-3xl">
           Let’s build something amazing together.
         </h3>
 
-        <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+        <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-slate-300">
           Partner with ZeoFex to design, build, and scale your next big idea.
         </p>
 

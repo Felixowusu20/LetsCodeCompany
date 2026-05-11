@@ -7,7 +7,7 @@ const channelIcons = [Mail, Phone, MapPin];
 
 export default function Contact() {
   return (
-    <main className="bg-slate-50">
+    <main className="bg-slate-50 dark:bg-slate-950">
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-slate-950/80 to-slate-950" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/80 to-transparent" />
