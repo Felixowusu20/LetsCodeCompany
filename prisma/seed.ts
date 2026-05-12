@@ -4,6 +4,7 @@ import {
   aboutMock,
   footerMock,
   mockBlogPosts,
+  mockClientProjects,
   mockHeroSlides,
   mockPartners,
   mockServices,
@@ -162,6 +163,28 @@ async function main() {
       },
     });
     console.log("Seeded Site branding (empty URLs → fallback /public assets)");
+  }
+
+  const clientProjectCount = await prisma.clientProject.count();
+  if (clientProjectCount === 0) {
+    for (const row of mockClientProjects) {
+      await prisma.clientProject.create({
+        data: {
+          title: row.title,
+          description: row.description,
+          projectUrl: row.projectUrl,
+          imageUrl: row.imageUrl,
+          iconUrl: row.iconUrl,
+          iconLucide: row.iconLucide,
+          clientName: row.clientName,
+          year: row.year,
+          tags: row.tags,
+          featured: row.featured,
+          sortOrder: row.sortOrder,
+        },
+      });
+    }
+    console.log("Seeded client projects:", mockClientProjects.length);
   }
 }
 

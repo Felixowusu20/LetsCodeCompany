@@ -177,6 +177,7 @@ export const footerMock = {
   exploreLinks: [
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
+    { label: "Work", href: "/work" },
     { label: "Products", href: "/products" },
   ],
   companyColumnTitle: "Company",
@@ -269,6 +270,71 @@ export const mockPartners = [
   {
     name: "Paystack",
     logo: "https://logo.clearbit.com/paystack.com",
+  },
+];
+
+/** Fallback when `ClientProject` table is empty or DB is unavailable. */
+export const mockClientProjects: {
+  id: string;
+  title: string;
+  description: string;
+  projectUrl: string;
+  imageUrl: string;
+  iconUrl: string | null;
+  iconLucide: string | null;
+  clientName: string | null;
+  year: number | null;
+  tags: string[];
+  featured: boolean;
+  sortOrder: number;
+}[] = [
+  {
+    id: "mock-cp-1",
+    title: "Commerce platform refresh",
+    description:
+      "End-to-end redesign and rebuild of a high-traffic storefront with faster checkout and clearer merchandising.",
+    projectUrl: "https://example.com",
+    imageUrl:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=900&fit=crop",
+    iconUrl: "https://logo.clearbit.com/shopify.com",
+    iconLucide: null,
+    clientName: "Northwind Retail",
+    year: 2025,
+    tags: ["Next.js", "E-commerce", "Performance"],
+    featured: true,
+    sortOrder: 0,
+  },
+  {
+    id: "mock-cp-2",
+    title: "Fintech onboarding hub",
+    description:
+      "Guided onboarding flows, document capture, and compliance-ready messaging for a regulated payments product.",
+    projectUrl: "https://example.org",
+    imageUrl:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&h=900&fit=crop",
+    iconUrl: null,
+    iconLucide: "Landmark",
+    clientName: "Summit Pay",
+    year: 2024,
+    tags: ["Product design", "Web app"],
+    featured: true,
+    sortOrder: 1,
+  },
+  {
+    id: "mock-cp-3",
+    title: "AI support assistant",
+    description:
+      "In-app assistant that routes tickets, suggests replies, and keeps human agents in the loop.",
+    projectUrl: "https://example.net",
+    imageUrl:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=900&fit=crop",
+    iconUrl: "https://logo.clearbit.com/slack.com",
+    iconLucide: null,
+    clientName: "Helix Labs",
+    year: 2024,
+    tags: ["AI", "Support", "Integrations"],
+    featured: false,
+    sortOrder: 2,
   },
 ];
 

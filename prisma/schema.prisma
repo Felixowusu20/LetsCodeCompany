@@ -83,6 +83,25 @@ model HeroSlide {
   updatedAt DateTime @updatedAt
 }
 
+/// Client work / case studies shown on `/work`.
+model ClientProject {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  projectUrl  String
+  imageUrl    String   @default("")
+  iconUrl     String?
+  /// Optional Lucide icon name (e.g. `Globe`). Prefer `iconUrl` for consistent branding.
+  iconLucide  String?
+  clientName  String?
+  year        Int?
+  tags        String[] @default([])
+  featured    Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 enum ContactStatus {
   NEW
   IN_PROGRESS
