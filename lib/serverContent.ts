@@ -3,6 +3,7 @@ import {
   aboutMock,
   footerMock,
   mockBlogPosts,
+  mockClientProjects,
   mockHeroSlides,
   mockPartners,
   mockProducts,
@@ -78,6 +79,65 @@ export type BlogPost = {
   authorAvatar: string;
   comments: number;
 };
+
+export type ClientProjectCard = {
+  id: string;
+  title: string;
+  description: string;
+  projectUrl: string;
+  imageUrl: string;
+  iconUrl: string | null;
+  iconLucide: string | null;
+  clientName: string | null;
+  year: number | null;
+  tags: string[];
+  featured: boolean;
+  sortOrder: number;
+};
+
+function mapClientProjectRow(p: {
+  id: string;
+  title: string;
+  description: string;
+  projectUrl: string;
+  imageUrl: string;
+  iconUrl: string | null;
+  iconLucide: string | null;
+  clientName: string | null;
+  year: number | null;
+  tags: string[];
+  featured: boolean;
+  sortOrder: number;
+}): ClientProjectCard {
+  return {
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    projectUrl: p.projectUrl,
+    imageUrl: p.imageUrl,
+    iconUrl: p.iconUrl ?? null,
+    iconLucide: p.iconLucide?.trim() || null,
+    clientName: p.clientName?.trim() || null,
+    year: p.year ?? null,
+    tags: p.tags ?? [],
+    featured: p.featured,
+    sortOrder: p.sortOrder,
+  };
+}
+
+export async function getClientProjects(): Promise<ClientProjectCard[]> {
+  try {
+    const rows = await prisma.clientProject.findMany({
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+    if (rows.length === 0) {
+      return mockClientProjects.map(mapClientProjectRow);
+    }
+    return rows.map(mapClientProjectRow);
+  } catch {
+    return mockClientProjects.map(mapClientProjectRow);
+  }
+}
 
 export async function getHomeHeroSlides(): Promise<HomeHeroSlide[]> {
   try {

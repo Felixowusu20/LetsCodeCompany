@@ -59,3 +59,18 @@ export type HeroSlide = {
   cta: string;
   sortOrder: number;
 };
+
+export type ClientProject = {
+  id: Id;
+  title: string;
+  description: string;
+  projectUrl: string;
+  imageUrl: string;
+  iconUrl?: string | null;
+  iconLucide?: string | null;
+  clientName?: string | null;
+  year?: number | null;
+  tags: string[];
+  featured: boolean;
+  sortOrder: number;
+};
