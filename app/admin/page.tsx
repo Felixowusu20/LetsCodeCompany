@@ -73,6 +73,12 @@ const cards: AdminCard[] = [
     icon: Handshake,
   },
   {
+    href: "/admin/partner-applications",
+    title: "Partner applications",
+    desc: "Submissions from the Become-a-partner form.",
+    icon: Handshake,
+  },
+  {
     href: "/admin/contacts",
     title: "Contacts",
     desc: "Inbound form submissions and export.",
