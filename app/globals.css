@@ -56,37 +56,41 @@ body {
 }
 
 /* ===============================
-   PARTNER MARQUEE (FINAL)
+   PARTNER MARQUEE
+   Horizontal, continuous, edge-faded. Duplicate the children once in JSX and
+   translate by -50% for a seamless loop.
 ================================= */
-
-/* Mask for smooth edge fade */
 .partner-marquee-mask {
   overflow: hidden;
   position: relative;
   mask-image: linear-gradient(
     to right,
     transparent,
-    black 10%,
-    black 90%,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
     transparent
   );
 }
 
-/* Scrolling track */
 .partner-marquee-track {
   display: flex;
   width: max-content;
   gap: 1.5rem;
-  animation: partner-marquee 30s linear infinite;
+  animation: partner-marquee 40s linear infinite;
   will-change: transform;
 }
 
-/* Pause on hover */
 .partner-marquee-track:hover {
   animation-play-state: paused;
 }
 
-/* Infinite scroll animation */
 @keyframes partner-marquee {
   0% {
     transform: translateX(0);
@@ -94,19 +98,6 @@ body {
   100% {
     transform: translateX(-50%);
   }
-}
-
-/* ===============================
-   OPTIONAL FLOATING CARD EFFECT
-================================= */
-.partner-item {
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.partner-item:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 /* ===============================
@@ -136,46 +127,11 @@ body {
 }
 
 /* ===============================
-   PARTNER ORBIT ANIMATIONS
-   Use translate3d/will-change to keep these on the compositor and away from
-   the main thread (so they don't compete with input → better INP).
-================================= */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spin-reverse-slow {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 25s linear infinite;
-  will-change: transform;
-}
-
-.animate-spin-reverse-slow {
-  animation: spin-reverse-slow 35s linear infinite;
-  will-change: transform;
-}
-
-/* ===============================
    REDUCED MOTION SUPPORT
 ================================= */
 @media (prefers-reduced-motion: reduce) {
   .partner-marquee-track,
   .animate-fade-in,
-  .animate-spin-slow,
-  .animate-spin-reverse-slow,
   .animate-ping {
     animation: none !important;
   }

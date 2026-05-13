@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const partnerLinks: Record<string, string> = {
@@ -42,17 +43,52 @@ const requestIdle: IdleCallback =
         ).requestIdleCallback(cb)
     : (cb) => window.setTimeout(cb, 200) as unknown as number;
 
+function PartnerCard({ partner }: { partner: Partner }) {
+  const href = partner.website ?? partnerLinks[partner.name] ?? "#";
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Visit ${partner.name}`}
+      className="group relative flex h-20 w-44 shrink-0 items-center justify-center rounded-2xl border border-slate-200/80 bg-white/80 px-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-blue-300/80 hover:bg-white hover:shadow-[0_18px_40px_-12px_rgba(37,99,235,0.25)] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-blue-400/40 dark:hover:bg-white/[0.08] dark:hover:shadow-[0_18px_40px_-12px_rgba(96,165,250,0.35)] sm:h-24 sm:w-52"
+    >
+      <Image
+        src={partner.logo}
+        alt={partner.name}
+        width={140}
+        height={56}
+        loading="lazy"
+        className="h-9 w-auto max-w-[8.5rem] object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0 sm:h-10"
+      />
+    </a>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div
+      aria-hidden="true"
+      className="relative h-20 w-44 shrink-0 animate-pulse rounded-2xl border border-slate-200/80 bg-slate-100/70 dark:border-white/10 dark:bg-white/[0.04] sm:h-24 sm:w-52"
+    />
+  );
+}
+
 export default function PartnerMarquee() {
   const [partners, setPartners] = useState<Partner[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
-  // Defer the fetch until the browser is idle. The marquee is decorative, so
+  // Defer the fetch until the browser is idle. This section is decorative, so
   // there's no reason to compete with hydration / first-interaction work.
   useEffect(() => {
     const controller = new AbortController();
     const id = requestIdle(() => {
       void loadPartners(controller.signal)
         .then((rows) => {
-          if (!controller.signal.aborted) setPartners(rows);
+          if (!controller.signal.aborted) {
+            setPartners(rows);
+            setLoaded(true);
+          }
         })
         .catch(() => {
           /* aborted or failed — leave empty */
@@ -66,100 +102,108 @@ export default function PartnerMarquee() {
     };
   }, []);
 
-  const orbitOne = partners.slice(0, 4);
-  const orbitTwo = partners.slice(4);
+  const hasPartners = partners.length > 0;
+
+  // After we've finished loading, if the admin has zero partners we hide the
+  // logo strip entirely (no fake/duplicated content). The header + CTA still
+  // render as a partnership invitation.
+  if (loaded && !hasPartners) {
+    return <PartnerSection logos={null} />;
+  }
 
   return (
-    <section className="relative overflow-hidden bg-white py-28 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <div className="absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-blue-100/50 blur-[120px] dark:bg-blue-500/20" />
-        <div className="absolute bottom-0 right-0 h-[420px] w-[420px] rounded-full bg-sky-100/40 blur-[120px] dark:bg-sky-500/15" />
+    <PartnerSection
+      logos={
+        hasPartners ? (
+          <div className="partner-marquee-mask">
+            <div className="partner-marquee-track">
+              {/* The list is duplicated in the DOM purely so the CSS keyframe
+                  (translateX -50%) loops seamlessly. The visible content is
+                  exactly the partners stored in the admin — nothing fake. */}
+              {[...partners, ...partners].map((p, i) => (
+                <PartnerCard key={`${p.id}-${i}`} partner={p} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="partner-marquee-mask">
+            <div className="flex gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <SkeletonCard key={`s-${i}`} />
+              ))}
+            </div>
+          </div>
+        )
+      }
+    />
+  );
+}
+
+function PartnerSection({ logos }: { logos: React.ReactNode | null }) {
+  return (
+    <section
+      aria-label="Our partners"
+      className="relative overflow-hidden border-t border-slate-200/80 bg-white py-24 text-slate-900 dark:border-white/5 dark:bg-slate-950 dark:text-slate-100 sm:py-28"
+    >
+      {/* Soft ambient backdrop */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-32 left-1/2 h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-blue-100/40 blur-[120px] dark:bg-blue-500/10" />
+        <div className="absolute bottom-0 right-0 h-[300px] w-[480px] rounded-full bg-sky-100/30 blur-[120px] dark:bg-sky-500/10" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600 dark:text-blue-400">
-            Trusted by Modern Brands
+        {/* Header */}
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400">
+            Trusted Partners
           </p>
 
-          <h2 className="mt-4 text-4xl font-bold sm:text-5xl">
-            Built With{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-sky-400">
-              Leading Companies
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            Powering teams at{" "}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-400 dark:to-sky-400">
+              world-class companies
             </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-2xl text-slate-600 dark:text-slate-300">
-            ZeoFex partners with startups and global companies to build modern
-            digital products and scalable platforms.
+          <p className="mx-auto mt-5 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
+            From fast-moving startups to global enterprises, ZeoFex partners
+            with ambitious teams to design, build, and scale modern digital
+            products.
           </p>
         </div>
 
-        <div className="relative mt-24 flex items-center justify-center">
-          <div className="relative z-20 flex h-44 w-44 translate-y-1 items-center justify-center rounded-full border border-slate-200 bg-white shadow-[0_10px_40px_rgba(0,0,0,0.06)] dark:border-white/15 dark:bg-slate-900 dark:shadow-black/40">
-            <div className="text-center">
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">ZeoFex</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Partner Network</div>
-            </div>
+        {/* Logo row (renders exactly the partners stored in the admin) */}
+        {logos ? <div className="mt-14 sm:mt-16">{logos}</div> : null}
 
-            <div className="absolute h-full w-full animate-ping rounded-full border border-blue-200/60 dark:border-blue-500/40" />
+        {/* CTA strip */}
+        <div className="mx-auto mt-16 flex max-w-4xl flex-col items-center gap-5 rounded-3xl border border-slate-200/80 bg-white/70 px-6 py-6 text-center backdrop-blur sm:flex-row sm:justify-between sm:px-10 sm:text-left dark:border-white/10 dark:bg-white/[0.04]">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-semibold text-slate-900 dark:text-white sm:text-base">
+              Want to join our partner network?
+            </span>
+            <span className="text-sm text-slate-600 dark:text-slate-300">
+              Let&apos;s build the next chapter of your product together.
+            </span>
           </div>
 
-          <div className="absolute h-[440px] w-[440px] animate-spin-slow">
-            {orbitOne.map((partner, i) => (
-              <div
-                key={partner.id}
-                className="absolute left-1/2 top-1/2"
-                style={{
-                  transform: `rotate(${i * 92}deg) translate(195px) rotate(-${i * 92}deg)`,
-                }}
-              >
-                <a
-                  href={partner.website ?? partnerLinks[partner.name] ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex h-16 w-16 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:scale-110 hover:border-blue-300 dark:border-white/15 dark:bg-slate-800"
-                >
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                    className="opacity-70 grayscale transition-opacity duration-300 group-hover:grayscale-0 group-hover:opacity-100"
-                  />
-                </a>
-              </div>
-            ))}
-          </div>
-
-          <div className="absolute h-[310px] w-[310px] animate-spin-reverse-slow">
-            {orbitTwo.map((partner, i) => (
-              <div
-                key={partner.id}
-                className="absolute left-1/2 top-1/2"
-                style={{
-                  transform: `rotate(${i * 118}deg) translate(145px) rotate(-${i * 118}deg)`,
-                }}
-              >
-                <a
-                  href={partner.website ?? partnerLinks[partner.name] ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:scale-110 hover:border-sky-300 dark:border-white/15 dark:bg-slate-800"
-                >
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    width={34}
-                    height={34}
-                    loading="lazy"
-                    className="opacity-70 grayscale transition-opacity duration-300 group-hover:grayscale-0 group-hover:opacity-100"
-                  />
-                </a>
-              </div>
-            ))}
-          </div>
+          <Link
+            href="/contact"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:from-blue-700 hover:to-indigo-700 sm:w-auto"
+          >
+            Become a partner
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="ml-2 h-4 w-4"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.293 4.293a1 1 0 011.414 0l4.999 5a1 1 0 010 1.414l-4.999 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>
