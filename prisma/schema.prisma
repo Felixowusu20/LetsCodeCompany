@@ -129,6 +129,69 @@ model ContactSubmission {
   updatedAt      DateTime           @updatedAt
 }
 
+enum PartnerApplicationStatus {
+  NEW
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum PartnershipType {
+  TECHNOLOGY
+  RESELLER
+  AGENCY
+  REFERRAL
+  AFFILIATE
+  STRATEGIC
+  OTHER
+}
+
+enum CompanySize {
+  SOLO
+  SIZE_2_10
+  SIZE_11_50
+  SIZE_51_200
+  SIZE_201_1000
+  SIZE_1000_PLUS
+}
+
+enum PartnerTimeline {
+  IMMEDIATELY
+  WITHIN_30_DAYS
+  WITHIN_90_DAYS
+  EXPLORING
+}
+
+/// Submissions from the public "Become a partner" form (open on PartnerMarquee).
+/// Visible to admins under /admin/partner-applications.
+model PartnerApplication {
+  id              String                   @id @default(cuid())
+  // Company
+  companyName     String
+  website         String?
+  industry        String?
+  companySize     CompanySize
+  headquarters    String?
+  // Primary contact
+  contactName     String
+  contactRole     String?
+  contactEmail    String
+  contactPhone    String?
+  // Partnership intent
+  partnershipType PartnershipType
+  goals           String
+  audienceFit     String?
+  expertise       String?
+  timeline        PartnerTimeline
+  budgetRange     String?
+  referralSource  String?
+  // Admin workflow
+  status          PartnerApplicationStatus @default(NEW)
+  notes           String?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+}
+
 /// Singleton row that powers the About page and the homepage About section.
 /// We always read/write the first row; missing fields fall back to defaults.
 model AboutContent {

@@ -35,6 +35,7 @@ const nav = [
   { href: "/admin/client-projects", label: "Client work", icon: Briefcase, end: false as const },
   { href: "/admin/blogs", label: "Blogs", icon: BookOpen, end: false as const },
   { href: "/admin/partners", label: "Partners", icon: Handshake, end: false as const },
+  { href: "/admin/partner-applications", label: "Partner applications", icon: Handshake, end: false as const },
   { href: "/admin/contacts", label: "Contacts", icon: Mail, end: false as const },
   { href: "/admin/footer", label: "Footer", icon: PanelBottom, end: false as const }
 ] as const;

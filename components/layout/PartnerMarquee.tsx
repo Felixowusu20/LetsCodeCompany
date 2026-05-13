@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import PartnerApplicationModal from "../partners/PartnerApplicationModal";
 
 const partnerLinks: Record<string, string> = {
   Spotify: "https://spotify.com",
@@ -77,6 +77,7 @@ function SkeletonCard() {
 export default function PartnerMarquee() {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [applyOpen, setApplyOpen] = useState(false);
 
   // Defer the fetch until the browser is idle. This section is decorative, so
   // there's no reason to compete with hydration / first-interaction work.
@@ -107,39 +108,49 @@ export default function PartnerMarquee() {
   // After we've finished loading, if the admin has zero partners we hide the
   // logo strip entirely (no fake/duplicated content). The header + CTA still
   // render as a partnership invitation.
-  if (loaded && !hasPartners) {
-    return <PartnerSection logos={null} />;
-  }
+  const logos: React.ReactNode | null =
+    loaded && !hasPartners
+      ? null
+      : hasPartners
+        ? (
+            <div className="partner-marquee-mask">
+              <div className="partner-marquee-track">
+                {/* The list is duplicated in the DOM purely so the CSS keyframe
+                    (translateX -50%) loops seamlessly. The visible content is
+                    exactly the partners stored in the admin — nothing fake. */}
+                {[...partners, ...partners].map((p, i) => (
+                  <PartnerCard key={`${p.id}-${i}`} partner={p} />
+                ))}
+              </div>
+            </div>
+          )
+        : (
+            <div className="partner-marquee-mask">
+              <div className="flex gap-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <SkeletonCard key={`s-${i}`} />
+                ))}
+              </div>
+            </div>
+          );
 
   return (
-    <PartnerSection
-      logos={
-        hasPartners ? (
-          <div className="partner-marquee-mask">
-            <div className="partner-marquee-track">
-              {/* The list is duplicated in the DOM purely so the CSS keyframe
-                  (translateX -50%) loops seamlessly. The visible content is
-                  exactly the partners stored in the admin — nothing fake. */}
-              {[...partners, ...partners].map((p, i) => (
-                <PartnerCard key={`${p.id}-${i}`} partner={p} />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="partner-marquee-mask">
-            <div className="flex gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <SkeletonCard key={`s-${i}`} />
-              ))}
-            </div>
-          </div>
-        )
-      }
-    />
+    <>
+      <PartnerSection logos={logos} onApply={() => setApplyOpen(true)} />
+      {applyOpen ? (
+        <PartnerApplicationModal onClose={() => setApplyOpen(false)} />
+      ) : null}
+    </>
   );
 }
 
-function PartnerSection({ logos }: { logos: React.ReactNode | null }) {
+function PartnerSection({
+  logos,
+  onApply,
+}: {
+  logos: React.ReactNode | null;
+  onApply: () => void;
+}) {
   return (
     <section
       aria-label="Our partners"
@@ -186,8 +197,9 @@ function PartnerSection({ logos }: { logos: React.ReactNode | null }) {
             </span>
           </div>
 
-          <Link
-            href="/contact"
+          <button
+            type="button"
+            onClick={onApply}
             className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:from-blue-700 hover:to-indigo-700 sm:w-auto"
           >
             Become a partner
@@ -203,7 +215,7 @@ function PartnerSection({ logos }: { logos: React.ReactNode | null }) {
                 clipRule="evenodd"
               />
             </svg>
-          </Link>
+          </button>
         </div>
       </div>
     </section>
