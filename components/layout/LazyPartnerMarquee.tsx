@@ -11,7 +11,12 @@ import dynamic from "next/dynamic";
  */
 const PartnerMarquee = dynamic(() => import("./PartnerMarquee"), {
   ssr: false,
-  loading: () => <div aria-hidden="true" className="h-[640px]" />,
+  loading: () => (
+    <div
+      aria-hidden="true"
+      className="h-[640px] sm:h-[560px]"
+    />
+  ),
 });
 
 export default function LazyPartnerMarquee() {
